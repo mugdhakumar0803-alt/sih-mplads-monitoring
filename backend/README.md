@@ -1,74 +1,31 @@
-# SIH MPLADS Monitoring & Accountability Platform
+# MPLADS Backend
 
-AI-powered MPLADS Monitoring and Accountability Platform developed for Smart India Hackathon.
+FastAPI backend for the SIH MPLADS Monitoring & Accountability Platform.
 
-## Problem
+## Architecture
 
-The platform aims to improve transparency, monitoring, accountability and anomaly detection in MPLADS-funded development works.
+The backend follows a modular FastAPI architecture.
 
-## Core Features
+### Main Components
 
-- AI-powered anomaly detection
-- Duplicate work detection
-- Project delay analysis
-- Deterministic compliance checking
-- Citizen project tracking
-- Citizen grievance management
-- Official vs citizen discrepancy detection
-- Photo verification
-- Fund release monitoring
-- Digital signatures and audit trail
-- Authority performance scoring
-- Citizen RAG assistant
+- `models/` - Database models
+- `schemas/` - API request and response schemas
+- `auth/` - Authentication and authorization
+- `signing/` - Digital signatures
+- `routers/` - API endpoints
+- `services/` - Business logic
+- `ml/` - Machine learning modules
 
-## Technology Stack
+## Technology
 
-### Frontend
-
-- React
-- JavaScript
-- HTML
-- CSS
-
-### Backend
-
-- FastAPI
 - Python
+- FastAPI
 - PostgreSQL
 - PostGIS
-
-### AI / ML
-
+- SQLAlchemy
 - Scikit-learn
 - Sentence Transformers
-- NLP
-- Machine Learning
 
-### Security
+## Status
 
-- JWT
-- Role-Based Access Control
-- Password Hashing
-- Digital Signatures
-
-### DevOps
-
-- Docker
-- GitHub Actions
-
-## Project Structure
-
-```text
-backend/
-├── app/
-│   ├── models/
-│   ├── schemas/
-│   ├── auth/
-│   ├── signing/
-│   ├── routers/
-│   ├── services/
-│   └── ml/
-│
-├── tests/
-├── requirements.txt
-└── README.md
+Under development for Smart India Hackathon.
