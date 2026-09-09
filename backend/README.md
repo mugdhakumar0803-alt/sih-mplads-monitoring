@@ -29,3 +29,12 @@ The backend follows a modular FastAPI architecture.
 ## Status
 
 Under development for Smart India Hackathon.
+
+##Collaborators
+
+- Kashika Nanda
+- Orla Ravi Threni
+- Mugdha Kumar
+- Nandini
+- Somya
+- Akshita
