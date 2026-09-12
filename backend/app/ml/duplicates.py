@@ -1,5 +1,4 @@
 # Duplicate MPLADS work detection
-# TODO: Implement NLP embedding similarity and geographic proximity matching
 """
 Owner: AI/ML (NLP).
 Location: backend/ml/duplicates.py
