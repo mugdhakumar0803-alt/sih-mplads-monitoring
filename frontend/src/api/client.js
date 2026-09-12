@@ -16,3 +16,7 @@ export async function apiRequest(endpoint, options = {}) {
 
   return response.json();
 }
+
+export async function checkBackend() {
+  return apiRequest("/health");
+}
