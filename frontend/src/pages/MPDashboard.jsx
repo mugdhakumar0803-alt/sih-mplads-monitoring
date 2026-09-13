@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DashboardLayout from "../components/Common/DashboardLayout";
+import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
 import FundReleaseGate from "../components/FundRelease/FundReleaseGate";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
@@ -29,11 +30,7 @@ function MPDashboard() {
         active: activeTab === n.label,
       }))}
     >
-      {activeTab === "Overview" && (
-        <p className="text-gray-600">
-          Welcome, {user?.name}. Your constituency overview here.
-        </p>
-      )}
+      {activeTab === "Overview" && <OverviewStats />}
       {activeTab === "Works Registry" && <WorksRegistry />}
       {activeTab === "Fund Release" && <FundReleaseGate />}
       {activeTab === "Grievances & SLA" && <GrievancePanel />}

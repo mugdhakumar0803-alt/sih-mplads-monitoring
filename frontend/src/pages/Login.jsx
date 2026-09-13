@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BrandLogo from "../components/Common/BrandLogo";
 import { useAuth } from "../context/AuthContext";
 
 const roles = [
@@ -28,10 +29,7 @@ function Login() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-navy">eSAMEEKSHA</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          MPLADS Monitoring & Accountability Portal
-        </p>
+        <BrandLogo />
       </div>
 
       {!selectedRole && (

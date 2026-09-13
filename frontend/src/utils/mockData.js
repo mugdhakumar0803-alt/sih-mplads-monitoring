@@ -169,3 +169,71 @@ export const mockEscalation = {
     { district: "Etah", status: "none", reason: "No calamity declared" },
   ],
 };
+export const mockSystemicPatterns = [
+  {
+    district: "Etah",
+    escalatedCases: 4,
+    period: "This Quarter",
+    severity: "high",
+  },
+  {
+    district: "Bareilly",
+    escalatedCases: 2,
+    period: "This Quarter",
+    severity: "medium",
+  },
+  {
+    district: "Lucknow",
+    escalatedCases: 0,
+    period: "This Quarter",
+    severity: "low",
+  },
+];
+export function getDashboardStats() {
+  const totalSanctioned = mockWorks.reduce((sum, w) => sum + w.sanctioned, 0);
+  const totalSpent = mockWorks.reduce((sum, w) => sum + w.spent, 0);
+  const completed = mockWorks.filter((w) => w.status === "Completed").length;
+  const activeAnomalies = mockWorks.filter((w) => w.flags.length > 0).length;
+
+  return {
+    totalSanctioned,
+    totalSpent,
+    utilizationPercent: ((totalSpent / totalSanctioned) * 100).toFixed(1),
+    completed,
+    totalWorks: mockWorks.length,
+    activeAnomalies,
+    statusBreakdown: {
+      Completed: mockWorks.filter((w) => w.status === "Completed").length,
+      "In Progress": mockWorks.filter((w) => w.status === "In Progress").length,
+      Delayed: mockWorks.filter((w) => w.status === "Delayed").length,
+      Stalled: mockWorks.filter((w) => w.status === "Stalled").length,
+    },
+  };
+}
+export const mockPhotos = {
+  "W-2024-001": [
+    { id: "PH-001", stage: "before", status: "verified", uploadedAt: "2026-06-10", distanceM: 8 },
+    { id: "PH-002", stage: "mid", status: "location_mismatch", uploadedAt: "2026-07-15", distanceM: 340 },
+  ],
+  "W-2024-003": [
+    { id: "PH-003", stage: "before", status: "verified", uploadedAt: "2026-05-01", distanceM: 5 },
+  ],
+};
+
+export function getWorkById(workId) {
+  return mockWorks.find((w) => w.id === workId);
+}
+export function addPhotoToWork(workId, photo) {
+  if (!mockPhotos[workId]) {
+    mockPhotos[workId] = [];
+  }
+  mockPhotos[workId] = [...mockPhotos[workId], photo];
+}
+
+export function getPhotosForWork(workId) {
+  return mockPhotos[workId] || [];
+}
+
+export function getGrievancesForWork(workId) {
+  return mockGrievances.filter((g) => g.workId === workId);
+}
