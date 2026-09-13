@@ -7,6 +7,7 @@ import MPDashboard from "./pages/MPDashboard";
 import DistrictDashboard from "./pages/DistrictDashboard";
 import StateDashboard from "./pages/StateDashboard";
 import MinistryDashboard from "./pages/MinistryDashboard";
+import WorkDetail from "./pages/WorkDetail";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/work/:workId" element={<WorkDetail />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

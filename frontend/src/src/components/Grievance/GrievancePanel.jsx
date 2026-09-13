@@ -2,9 +2,9 @@ import { useState } from "react";
 import { mockGrievances, escalationLabels } from "../../utils/mockData";
 import { getSLAStatus } from "../../utils/slaHelper";
 
-function GrievancePanel() {
+function GrievancePanel({ presetWorkId, presetWorkTitle }) {
   const [grievances, setGrievances] = useState(mockGrievances);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(!!presetWorkId);
   const [description, setDescription] = useState("");
 
   const handleSubmit = (e) => {
@@ -13,8 +13,8 @@ function GrievancePanel() {
 
     const newGrievance = {
       id: `GRV-${Math.floor(Math.random() * 9000) + 1000}`,
-      workId: "W-2024-005",
-      workTitle: "School Building Renovation",
+      workId: presetWorkId || "W-2024-005",
+      workTitle: presetWorkTitle || "School Building Renovation",
       description,
       filedBy: "You",
       filedAt: new Date().toISOString(),
@@ -25,22 +25,29 @@ function GrievancePanel() {
 
     setGrievances([newGrievance, ...grievances]);
     setDescription("");
-    setShowForm(false);
+    setShowForm(!presetWorkId);
   };
+
+  const relevantGrievances = presetWorkId
+    ? grievances.filter((g) => g.workId === presetWorkId)
+    : grievances;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-navy">Grievances & SLA Tracker</h3>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-navy text-white px-4 py-2 rounded text-sm"
-        >
-          {showForm ? "Cancel" : "+ File Grievance"}
-        </button>
+        <h3 className="font-semibold text-navy">
+          {presetWorkId ? "File a Grievance" : "Grievances & SLA Tracker"}
+        </h3>
+        {!presetWorkId && (
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-navy text-white px-4 py-2 rounded text-sm"
+          >
+            {showForm ? "Cancel" : "+ File Grievance"}
+          </button>
+        )}
       </div>
 
-      {/* Filing Form */}
       {showForm && (
         <form
           onSubmit={handleSubmit}
@@ -65,9 +72,13 @@ function GrievancePanel() {
         </form>
       )}
 
-      {/* Grievance List */}
       <div className="space-y-3">
-        {grievances.map((g) => {
+        {relevantGrievances.length === 0 && (
+          <p className="text-sm text-gray-400">
+            No grievances filed against this work yet.
+          </p>
+        )}
+        {relevantGrievances.map((g) => {
           const sla = getSLAStatus(g.filedAt, g.slaDeadlineDays);
           return (
             <div

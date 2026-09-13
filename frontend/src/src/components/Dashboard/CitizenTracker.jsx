@@ -1,15 +1,23 @@
+import ChatbotWidget from "../Chatbot/ChatbotWidget";
 import { useState } from "react";
 import { mockWorks, statusColors } from "../../utils/mockData";
+import GrievancePanel from "../Grievance/GrievancePanel";
 
 function CitizenTracker() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("search");
+  const [selectedWork, setSelectedWork] = useState(null);
 
   const filteredWorks = mockWorks.filter(
     (work) =>
       work.title.toLowerCase().includes(search.toLowerCase()) ||
       work.district.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleFileComplaint = (work) => {
+    setSelectedWork(work);
+    setActiveTab("complaint");
+  };
 
   return (
     <div>
@@ -97,14 +105,19 @@ function CitizenTracker() {
                     </p>
                   )}
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-navy">
-                    ₹{(work.sanctioned / 100000).toFixed(1)}L
-                  </p>
-                  <p className="text-xs text-gray-400">sanctioned</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {work.progress}%
-                  </p>
+                <div className="text-right flex flex-col items-end gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-navy">
+                      ₹{(work.sanctioned / 100000).toFixed(1)}L
+                    </p>
+                    <p className="text-xs text-gray-400">sanctioned</p>
+                  </div>
+                  <button
+                    onClick={() => handleFileComplaint(work)}
+                    className="text-xs bg-navy text-white px-3 py-1.5 rounded"
+                  >
+                    File Complaint
+                  </button>
                 </div>
               </div>
             ))}
@@ -114,18 +127,28 @@ function CitizenTracker() {
 
       {/* File Complaint Tab */}
       {activeTab === "complaint" && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-gray-400 text-sm">
-          Select a work from "Search Works" first, then file a complaint
-          against it — this connects to the Grievance module.
+        <div>
+          {selectedWork ? (
+            <div>
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4 text-sm text-navy">
+                Filing a complaint against: <strong>{selectedWork.title}</strong> ({selectedWork.id})
+              </div>
+              <GrievancePanel presetWorkId={selectedWork.id} presetWorkTitle={selectedWork.title} />
+            </div>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-gray-400 text-sm">
+              Select a work from "Search Works" first, then click "File Complaint" to report an issue against it.
+            </div>
+          )}
         </div>
       )}
 
       {/* AI Assistant Tab */}
-      {activeTab === "ai" && (
+      {activeTab === "ai" && <ChatbotWidget />}(
         <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-gray-400 text-sm">
           Citizen AI Assistant — stretch goal, built by AI/ML teammate.
         </div>
-      )}
+      )
     </div>
   );
 }
