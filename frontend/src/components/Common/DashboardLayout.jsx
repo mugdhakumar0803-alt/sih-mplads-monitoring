@@ -1,4 +1,5 @@
 import { useAuth } from "../../context/AuthContext";
+import BrandLogo from "./BrandLogo";
 
 const roleLabels = {
   citizen: "Citizen",
@@ -15,7 +16,7 @@ function DashboardLayout({ title, navItems = [], children }) {
     <div className="min-h-screen bg-gray-50 flex">
       <aside className="w-60 bg-navy text-white flex flex-col">
         <div className="p-5 border-b border-white/10">
-          <h2 className="font-bold text-lg">eSAMEEKSHA</h2>
+          <BrandLogo compact dark className="items-start" />
           <p className="text-xs text-ice mt-1">{roleLabels[user?.role]}</p>
         </div>
         <nav className="flex-1 p-3 flex flex-col gap-1">

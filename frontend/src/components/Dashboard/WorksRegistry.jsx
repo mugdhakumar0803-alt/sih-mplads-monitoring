@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { mockWorks, statusColors } from "../../utils/mockData";
 
 function WorksRegistry() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  const navigate = useNavigate();
 
   const filters = ["All", "Completed", "In Progress", "Delayed", "Stalled"];
 
@@ -18,7 +20,6 @@ function WorksRegistry() {
 
   return (
     <div>
-      {/* Search + Filter Bar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <input
           type="text"
@@ -45,10 +46,9 @@ function WorksRegistry() {
       </div>
 
       <p className="text-xs text-gray-400 mb-2">
-        Showing {filteredWorks.length} of {mockWorks.length} works
+        Showing {filteredWorks.length} of {mockWorks.length} works — click a row for details
       </p>
 
-      {/* Table */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -68,7 +68,10 @@ function WorksRegistry() {
             {filteredWorks.map((work, idx) => (
               <tr
                 key={work.id}
-                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                onClick={() => navigate(`/work/${work.id}`)}
+                className={`cursor-pointer hover:bg-blue-50 ${
+                  idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                }`}
               >
                 <td className="p-3">
                   <p className="font-semibold text-navy">{work.title}</p>
