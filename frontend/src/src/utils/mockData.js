@@ -210,3 +210,30 @@ export function getDashboardStats() {
     },
   };
 }
+export const mockPhotos = {
+  "W-2024-001": [
+    { id: "PH-001", stage: "before", status: "verified", uploadedAt: "2026-06-10", distanceM: 8 },
+    { id: "PH-002", stage: "mid", status: "location_mismatch", uploadedAt: "2026-07-15", distanceM: 340 },
+  ],
+  "W-2024-003": [
+    { id: "PH-003", stage: "before", status: "verified", uploadedAt: "2026-05-01", distanceM: 5 },
+  ],
+};
+
+export function getWorkById(workId) {
+  return mockWorks.find((w) => w.id === workId);
+}
+export function addPhotoToWork(workId, photo) {
+  if (!mockPhotos[workId]) {
+    mockPhotos[workId] = [];
+  }
+  mockPhotos[workId] = [...mockPhotos[workId], photo];
+}
+
+export function getPhotosForWork(workId) {
+  return mockPhotos[workId] || [];
+}
+
+export function getGrievancesForWork(workId) {
+  return mockGrievances.filter((g) => g.workId === workId);
+}
