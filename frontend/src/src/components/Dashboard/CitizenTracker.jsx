@@ -1,3 +1,4 @@
+import ChatbotWidget from "../Chatbot/ChatbotWidget";
 import { useState } from "react";
 import { mockWorks, statusColors } from "../../utils/mockData";
 import GrievancePanel from "../Grievance/GrievancePanel";
@@ -143,11 +144,11 @@ function CitizenTracker() {
       )}
 
       {/* AI Assistant Tab */}
-      {activeTab === "ai" && (
+      {activeTab === "ai" && <ChatbotWidget />}(
         <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-gray-400 text-sm">
           Citizen AI Assistant — stretch goal, built by AI/ML teammate.
         </div>
-      )}
+      )
     </div>
   );
 }
