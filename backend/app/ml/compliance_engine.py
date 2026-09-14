@@ -47,6 +47,26 @@ class ComplianceStatus:
     st_allocation_percent: float | None   # None = not computable yet, see note below
 
 
+class ComplianceEngine:
+    """Compatibility facade used by API services for work-level checks."""
+
+    def check_compliance(self, work) -> dict:
+        category = getattr(getattr(work, "category", None), "value", getattr(work, "category", ""))
+        title = getattr(work, "work_title", "")
+        category_result = validate_work_category(f"{category} {title}")
+        violations = [] if category_result.is_permissible else [category_result.reason]
+        risk_score = float(getattr(work, "risk_score", 0) or 0)
+        if risk_score >= 0.7:
+            violations.append("Work has a high anomaly risk score")
+        score = max(0.0, 1.0 - min(1.0, len(violations) * 0.25))
+        return {
+            "status": "compliant" if not violations else "non_compliant",
+            "score": round(score, 2),
+            "violations": violations,
+            "recommendations": ["Complete field verification before release"] if violations else [],
+        }
+
+
 def validate_work_category(work_text: str) -> CategoryValidationResult:
     """
     Deterministic check — run this BEFORE a work is sanctioned, not after.

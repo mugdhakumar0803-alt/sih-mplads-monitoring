@@ -13,6 +13,8 @@ fetch_combined_data.py script from earlier already does real geocoding
 via Nominatim, if you want to add lat/long columns and wire that in later).
 """
 from dataclasses import dataclass
+from math import asin, cos, radians, sin, sqrt
+import re
 from sentence_transformers import SentenceTransformer, util
 
 _model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -39,6 +41,9 @@ class DuplicatePair:
 
 
 def find_duplicate_clusters(works: list[WorkInput]) -> list[DuplicatePair]:
+    if works and hasattr(works[0], "description"):
+        return _find_geo_duplicates(works)
+
     results: list[DuplicatePair] = []
 
     # Group by category AND constituency first — a hand pump in Pune and
@@ -70,6 +75,27 @@ def find_duplicate_clusters(works: list[WorkInput]) -> list[DuplicatePair]:
                         ),
                     ))
 
+    return results
+
+
+def _find_geo_duplicates(works) -> list[DuplicatePair]:
+    def tokens(value):
+        return set(re.findall(r"[a-z0-9]+", value.lower()))
+
+    def distance(left, right):
+        d_lat = radians(right.latitude - left.latitude)
+        d_lon = radians(right.longitude - left.longitude)
+        value = sin(d_lat / 2) ** 2 + cos(radians(left.latitude)) * cos(radians(right.latitude)) * sin(d_lon / 2) ** 2
+        return 2 * 6371000 * asin(sqrt(value))
+
+    results = []
+    for index, left in enumerate(works):
+        for right in works[index + 1:]:
+            left_tokens, right_tokens = tokens(left.description), tokens(right.description)
+            similarity = len(left_tokens & right_tokens) / len(left_tokens | right_tokens) if left_tokens | right_tokens else 0
+            distance_m = distance(left, right)
+            if similarity >= 0.82 and distance_m <= 500:
+                results.append(DuplicatePair(left.work_id, right.work_id, round(similarity, 3), "High semantic similarity and geographic proximity"))
     return results
 
 

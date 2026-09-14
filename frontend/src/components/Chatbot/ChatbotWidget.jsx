@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { getChatbotResponse } from "../../utils/chatbotHelper";
+import VoiceChatbotWidget from "./VoiceChatbotWidget";
 
 function ChatbotWidget() {
   const [messages, setMessages] = useState([
@@ -94,6 +95,7 @@ function ChatbotWidget() {
           Send
         </button>
       </form>
+      <VoiceChatbotWidget />
     </div>
   );
 }
