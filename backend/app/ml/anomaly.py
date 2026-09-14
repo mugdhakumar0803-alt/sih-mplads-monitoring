@@ -62,6 +62,19 @@ def train_model(historical_works: list[WorkFeatures]) -> IsolationForest:
     return model
 
 
+def score_works(works: list[WorkFeatures]) -> list[dict]:
+    """Train a batch model and return anomaly scores for the supplied works."""
+    if not works:
+        return []
+
+    background_data = _to_dataframe(works)
+    model = train_model(works)
+    return [
+        score_and_explain(model, background_data, work)
+        for work in works
+    ]
+
+
 def score_and_explain(model: IsolationForest, background_data: pd.DataFrame, work: WorkFeatures) -> dict:
     """
     Returns a dict matching the /works/{id}/anomaly-score response shape
