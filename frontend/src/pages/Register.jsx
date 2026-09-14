@@ -1,9 +1,7 @@
-
-import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import BrandLogo from "../components/Common/BrandLogo";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import panchsetuLogo from "../assets/panchsetu-logo.png";
 
 const roles = [
   { id: "citizen", label: "Citizen", icon: "👤", path: "/citizen" },
@@ -13,25 +11,30 @@ const roles = [
   { id: "ministry", label: "Ministry", icon: "🏢", path: "/ministry" },
 ];
 
-function Login() {
+function Register() {
   const [selectedRole, setSelectedRole] = useState(null);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !password) return;
-    login(selectedRole, email);
+    if (!name || !email || !password) return;
+    register(selectedRole, name, email);
     const role = roles.find((r) => r.id === selectedRole);
     navigate(role.path);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-      <div className="text-center mb-10">
-        <BrandLogo />
+      <img src={panchsetuLogo} alt="PANCHSETU" className="w-24 mb-4" />
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-navy">Create an Account</h1>
+        <p className="text-gray-500 text-sm mt-1">
+          Register for PANCHSETU access
+        </p>
       </div>
 
       {!selectedRole && (
@@ -60,9 +63,16 @@ function Login() {
             ← Back
           </button>
           <h2 className="text-lg font-bold text-navy mb-4">
-            Login as {roles.find((r) => r.id === selectedRole)?.label}
+            Register as {roles.find((r) => r.id === selectedRole)?.label}
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 text-sm"
+            />
             <input
               type="email"
               placeholder="Email"
@@ -81,19 +91,20 @@ function Login() {
               type="submit"
               className="bg-navy text-white rounded py-2 text-sm font-semibold mt-2 hover:opacity-90"
             >
-              Login
+              Create Account
             </button>
           </form>
-          <p className="text-sm text-gray-500 mt-6">
-  New to PANCHSETU?{" "}
-  <Link to="/register" className="text-navy font-semibold">
-    Create an account
-  </Link>
-</p>
         </div>
       )}
+
+      <p className="text-sm text-gray-500 mt-6">
+        Already have an account?{" "}
+        <Link to="/login" className="text-navy font-semibold">
+          Login here
+        </Link>
+      </p>
     </div>
   );
 }
 
-export default Login;
+export default Register;

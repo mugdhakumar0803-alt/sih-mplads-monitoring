@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DashboardLayout from "../components/Common/DashboardLayout";
+import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 import EscalationTracker from "../components/Common/EscalationTracker";
@@ -26,9 +27,12 @@ function DistrictDashboard() {
       }))}
     >
       {activeTab === "Overview" && (
-        <p className="text-gray-600">
-          Welcome, {user?.name}. Your district's works overview here.
-        </p>
+        <div>
+          <p className="text-gray-600 mb-4">
+            Welcome, {user?.name}. Your district's works overview here.
+          </p>
+          <OverviewStats />
+        </div>
       )}
       {activeTab === "Works Registry" && <WorksRegistry />}
       {activeTab === "Grievances & SLA" && <GrievancePanel />}

@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/Common/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import CitizenDashboard from "./pages/CitizenDashboard";
 import MPDashboard from "./pages/MPDashboard";
 import DistrictDashboard from "./pages/DistrictDashboard";
@@ -14,7 +16,9 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/citizen"
             element={

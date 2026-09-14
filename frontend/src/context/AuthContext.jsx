@@ -6,12 +6,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   const login = (role, email) => {
-    // Abhi ke liye mock login — baad mein real API se replace karenge
-    const mockUser = {
-      role,
-      email,
-      name: email.split("@")[0],
-    };
+    const mockUser = { role, email, name: email.split("@")[0] };
+    setUser(mockUser);
+    localStorage.setItem("mplads_user", JSON.stringify(mockUser));
+  };
+
+  const register = (role, name, email) => {
+    // Mock registration — in production this calls POST /auth/register
+    const mockUser = { role, email, name };
     setUser(mockUser);
     localStorage.setItem("mplads_user", JSON.stringify(mockUser));
   };
@@ -22,7 +24,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
