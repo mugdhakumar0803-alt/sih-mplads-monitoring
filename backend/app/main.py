@@ -10,6 +10,7 @@ from app.routers.chatbot import router as chatbot_router
 from app.routers.ai_detection import router as ai_detection_router
 from app.routers.compliance import router as compliance_router
 from app.routers.photos import router as photos_router
+from app.routers.ratings import router as ratings_router
 
 app = FastAPI(
     title="SIH MPLADS Monitoring & Accountability Platform",
@@ -37,7 +38,7 @@ app.include_router(chatbot_router)
 app.include_router(ai_detection_router)
 app.include_router(compliance_router)
 app.include_router(photos_router)
-
+app.include_router(ratings_router)
 
 @app.on_event("startup")
 def initialize_database():

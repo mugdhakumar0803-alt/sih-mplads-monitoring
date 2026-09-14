@@ -1,7 +1,6 @@
 services:
-
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: mplads-postgres
     restart: unless-stopped
     environment:

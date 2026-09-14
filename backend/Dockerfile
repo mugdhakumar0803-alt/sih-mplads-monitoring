@@ -1,14 +1,21 @@
-FROM python:3.11-slim
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY package*.json ./
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN npm ci --include=dev
 
-COPY app ./app
-COPY app/ml/training ./app/ml/training
+COPY . .
 
-EXPOSE 8000
+RUN npm run build
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

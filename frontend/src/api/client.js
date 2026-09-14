@@ -71,3 +71,23 @@ export function getPhotos(workId) {
 export function getFundEligibility(workId) {
   return apiRequest(`/fund-release/eligibility/${encodeURIComponent(workId)}`);
 }
+
+export function getLeaderboard(
+  level = "national",
+  state = "",
+  constituency = "",
+) {
+  const params = new URLSearchParams();
+
+  params.set("level", level);
+
+  if (state) {
+    params.set("state", state);
+  }
+
+  if (constituency) {
+    params.set("constituency", constituency);
+  }
+
+  return apiRequest(`/ratings/leaderboard?${params.toString()}`);
+}
