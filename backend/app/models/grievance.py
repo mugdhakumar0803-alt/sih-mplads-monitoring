@@ -27,7 +27,7 @@ class GrievanceSeverity(str, enum.Enum):
 class Grievance(Base):
     """Citizen grievance model."""
     __tablename__ = "grievances"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     grievance_id = Column(String(50), unique=True, index=True, nullable=False)
     work_id = Column(String(50), ForeignKey("works.work_id"), index=True)
@@ -39,5 +39,12 @@ class Grievance(Base):
     status = Column(Enum(GrievanceStatus), default=GrievanceStatus.REGISTERED, index=True)
     resolution_notes = Column(Text)
     is_escalated = Column(Boolean, default=False)
+
+    # NEW — these two are what sla_engine.py actually needs to track the
+    # 4-level ladder (district -> state -> mp -> ministry) instead of a
+    # single True/False flag.
+    current_escalation_level = Column(String(20), default="district")
+    last_escalated_at = Column(DateTime, nullable=True)
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
