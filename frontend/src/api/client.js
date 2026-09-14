@@ -35,3 +35,39 @@ export function loginRequest(username, password) {
 export function getCurrentUser() {
   return apiRequest("/auth/me");
 }
+
+export function getWorks(params = "") {
+  return apiRequest(`/works/${params}`);
+}
+
+export function getWork(workId) {
+  return apiRequest(`/works/${encodeURIComponent(workId)}`);
+}
+
+export function getGrievances(workId = "") {
+  const query = workId ? `?work_id=${encodeURIComponent(workId)}` : "";
+  return apiRequest(`/grievances/${query}`);
+}
+
+export function fileGrievance(data) {
+  return apiRequest("/grievances/file", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function verifyPhoto(workId, file, captureDate) {
+  const body = new FormData();
+  body.append("work_id", workId);
+  body.append("photo", file);
+  if (captureDate) body.append("capture_date", captureDate);
+  return apiRequest("/photos/verify", { method: "POST", body });
+}
+
+export function getPhotos(workId) {
+  return apiRequest(`/photos/${encodeURIComponent(workId)}`);
+}
+
+export function getFundEligibility(workId) {
+  return apiRequest(`/fund-release/eligibility/${encodeURIComponent(workId)}`);
+}

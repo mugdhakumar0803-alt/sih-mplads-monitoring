@@ -12,6 +12,23 @@ from ..models.work import Work
 router = APIRouter(prefix="/photos", tags=["Photo Verification"])
 
 
+@router.get("/{work_id}")
+async def list_photos(work_id: str, db: Session = Depends(get_db)):
+	photos = db.query(PhotoVerification).filter(PhotoVerification.work_id == work_id).order_by(PhotoVerification.upload_date.desc()).all()
+	return {
+		"photos": [
+			{
+				"photo_id": str(photo.id),
+				"work_id": photo.work_id,
+				"status": photo.is_verified,
+				"verification_score": photo.verification_score,
+				"capture_date": photo.capture_date,
+			}
+			for photo in photos
+		]
+	}
+
+
 @router.post("/verify")
 async def verify_photo(
 	work_id: str = Form(...),
