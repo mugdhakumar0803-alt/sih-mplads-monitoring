@@ -84,7 +84,10 @@ async def approve_fund_release(
     current_user: User = Depends(require_role(UserRole.ADMIN, UserRole.DISTRICT_OFFICIAL)),
 ):
     """Approve a fund release request."""
-    release = FundReleaseService.approve_release(db, release_id, approval_notes)
+    try:
+        release = FundReleaseService.approve_release(db, release_id, approval_notes)
+    except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error))
     if not release:
         raise HTTPException(status_code=404, detail="Release not found")
     

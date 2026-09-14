@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 from ..models.grievance import Grievance, GrievanceStatus, GrievanceSeverity
+import uuid
 
 
 class GrievanceService:
@@ -37,6 +38,8 @@ class GrievanceService:
     @staticmethod
     def create_grievance(db: Session, grievance_data: dict) -> Grievance:
         """Create a new grievance record."""
+        grievance_data = dict(grievance_data)
+        grievance_data.setdefault("grievance_id", f"GRV-{uuid.uuid4().hex[:10].upper()}")
         new_grievance = Grievance(**grievance_data)
         db.add(new_grievance)
         db.commit()

@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import DashboardLayout from "../components/Common/DashboardLayout";
 import CitizenTracker from "../components/Dashboard/CitizenTracker";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 
 function CitizenDashboard() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Track Works");
 
   const navItems = [

@@ -14,6 +14,7 @@ class UserRole(str, enum.Enum):
     STATE_OFFICIAL = "state_official"
     DISTRICT_OFFICIAL = "district_official"
     MP = "mp"
+    MINISTRY = "ministry"
     CITIZEN = "citizen"
 
 

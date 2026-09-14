@@ -54,11 +54,23 @@ class WorkService:
     @staticmethod
     def calculate_risk_scores(db: Session, works: List[Work]) -> List[dict]:
         """Calculate risk scores for works using ML model."""
+        if not works:
+            return []
+
+        peer_allocations: dict[tuple[str, str], list[float]] = {}
+        for peer in db.query(Work).all():
+            category = getattr(peer.category, "value", peer.category)
+            peer_allocations.setdefault((peer.state, category), []).append(peer.allocation_amount or 0.0)
+
         work_features = [
             WorkFeatures(
                 work_id=w.work_id,
-                cost_ratio_vs_category_median=1.0,  # Would come from training
-                progress_vs_elapsed_time_ratio=0.5,
+                cost_ratio_vs_category_median=(w.allocation_amount or 0.0) / max(
+                    sorted(peer_allocations.get((w.state, getattr(w.category, "value", w.category)), [w.allocation_amount or 1.0]))[
+                        len(peer_allocations.get((w.state, getattr(w.category, "value", w.category)), [1.0])) // 2
+                    ], 1.0
+                ),
+                progress_vs_elapsed_time_ratio=1.0 if getattr(w.status, "value", w.status) == "Completed" else 0.5,
                 days_since_last_photo=w.days_since_last_photo or 30,
                 citizen_grievance_count=float(w.citizen_grievance_count or 0),
             )

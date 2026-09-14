@@ -2,6 +2,7 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+from uuid import UUID
 
 from .security import decode_token
 from ..database import get_db
@@ -25,7 +26,11 @@ async def get_current_user(
             detail="Invalid or expired token",
         )
     
-    user = db.query(User).filter(User.id == token_data.user_id).first()
+    try:
+        user_id = UUID(token_data.user_id)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid user token")
+    user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

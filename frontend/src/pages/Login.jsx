@@ -6,24 +6,30 @@ import { useAuth } from "../context/AuthContext";
 const roles = [
   { id: "citizen", label: "Citizen", icon: "👤", path: "/citizen" },
   { id: "mp", label: "Member of Parliament", icon: "🏛️", path: "/mp" },
-  { id: "district", label: "District Authority", icon: "📍", path: "/district" },
-  { id: "state", label: "State Nodal Authority", icon: "🗺️", path: "/state" },
+  { id: "district_official", label: "District Authority", icon: "📍", path: "/district" },
+  { id: "state_official", label: "State Nodal Authority", icon: "🗺️", path: "/state" },
   { id: "ministry", label: "Ministry", icon: "🏢", path: "/ministry" },
 ];
 
 function Login() {
   const [selectedRole, setSelectedRole] = useState(null);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) return;
-    login(selectedRole, email);
-    const role = roles.find((r) => r.id === selectedRole);
-    navigate(role.path);
+    setError("");
+    try {
+      const profile = await login(username, password);
+      const role = roles.find((r) => r.id === profile.role);
+      if (!role) throw new Error("This account has no dashboard configured");
+      navigate(role.path);
+    } catch (loginError) {
+      setError(loginError.message || "Login failed");
+    }
   };
 
   return (
@@ -62,10 +68,10 @@ function Login() {
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="border border-gray-300 rounded px-3 py-2 text-sm"
             />
             <input
@@ -82,6 +88,7 @@ function Login() {
               Login
             </button>
           </form>
+          {error && <p className="text-red-600 text-sm mt-3">{error}</p>}
         </div>
       )}
     </div>

@@ -22,7 +22,7 @@ class PhotoVerification(Base):
     is_verified = Column(String(50), default="pending")  # pending, verified, rejected
     verification_score = Column(Float)  # 0-1 confidence score
     verification_method = Column(String(100))  # manual, ai_validation, blockchain
-    metadata = Column(JSON)  # Location, device info, etc.
+    photo_metadata = Column("metadata", JSON)  # Location, device info, etc.
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

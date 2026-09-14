@@ -29,3 +29,9 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def init_db():
+    """Create local tables; production deployments should use migrations."""
+    from .models import fund_release, grievance, photo, user, work
+    Base.metadata.create_all(bind=engine)

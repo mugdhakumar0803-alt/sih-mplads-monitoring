@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     """Application configuration from environment variables."""
     
     # Database
-    database_url: str = "postgresql+psycopg2://user:password@localhost:5432/mplads"
+    database_url: str = "sqlite:///./mplads.db"
     
     # JWT
     secret_key: str = "your-secret-key-change-in-production"

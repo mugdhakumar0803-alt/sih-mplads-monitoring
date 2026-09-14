@@ -35,7 +35,7 @@ function App() {
           <Route
             path="/district"
             element={
-              <ProtectedRoute allowedRole="district">
+              <ProtectedRoute allowedRole="district_official">
                 <DistrictDashboard />
               </ProtectedRoute>
             }
@@ -43,7 +43,7 @@ function App() {
           <Route
             path="/state"
             element={
-              <ProtectedRoute allowedRole="state">
+              <ProtectedRoute allowedRole="state_official">
                 <StateDashboard />
               </ProtectedRoute>
             }

@@ -3,10 +3,38 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 from ..models.fund_release import FundReleaseRecord, ReleaseStatus
+from ..models.grievance import Grievance, GrievanceStatus
+from ..models.work import Work, WorkStatus
+from ..ml.compliance_engine import ComplianceEngine
 
 
 class FundReleaseService:
     """Service for fund release operations."""
+
+    REQUIRED_PROGRESS = 0.75
+
+    @staticmethod
+    def evaluate_eligibility(db: Session, release: FundReleaseRecord) -> dict:
+        work = db.query(Work).filter(Work.work_id == release.work_id).first()
+        if not work:
+            return {"eligible": False, "checks": {"work_exists": False}, "reasons": ["Work not found"]}
+
+        open_grievances = db.query(Grievance).filter(
+            Grievance.work_id == release.work_id,
+            Grievance.status.notin_([GrievanceStatus.RESOLVED, GrievanceStatus.CLOSED]),
+        ).count()
+        progress = 1.0 if work.status == WorkStatus.COMPLETED else 0.0
+        utilization = (release.released_amount or 0.0) / release.sanction_amount if release.sanction_amount else 0.0
+        compliance = ComplianceEngine().check_compliance(work)
+        checks = {
+            "work_exists": True,
+            "verified_completion": progress >= FundReleaseService.REQUIRED_PROGRESS,
+            "utilization": utilization >= FundReleaseService.REQUIRED_PROGRESS,
+            "no_unresolved_grievances": open_grievances == 0,
+            "compliance": compliance["status"] == "compliant",
+        }
+        reasons = [name for name, passed in checks.items() if not passed]
+        return {"eligible": not reasons, "checks": checks, "reasons": reasons, "compliance": compliance}
     
     @staticmethod
     def get_all_releases(
@@ -49,6 +77,13 @@ class FundReleaseService:
         """Approve a fund release request."""
         release = db.query(FundReleaseRecord).filter(FundReleaseRecord.release_id == release_id).first()
         if release:
+            eligibility = FundReleaseService.evaluate_eligibility(db, release)
+            release.eligibility_checks = eligibility["checks"]
+            release.eligibility_status = "eligible" if eligibility["eligible"] else "ineligible"
+            release.compliance_score = eligibility["compliance"]["score"] if "compliance" in eligibility else 0.0
+            if not eligibility["eligible"]:
+                db.commit()
+                raise ValueError("Fund release blocked: " + ", ".join(eligibility["reasons"]))
             release.status = ReleaseStatus.APPROVED
             release.approval_date = datetime.utcnow()
             if approval_notes:

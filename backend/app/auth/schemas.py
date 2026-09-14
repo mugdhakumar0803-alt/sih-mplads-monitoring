@@ -1,6 +1,7 @@
 # Pydantic schemas for auth
 from pydantic import BaseModel
 from typing import Optional
+from ..models.user import UserRole
 
 
 class TokenData(BaseModel):
@@ -25,4 +26,4 @@ class UserRegister(BaseModel):
     username: str
     email: str
     password: str
-    role: str = "citizen"
+    role: UserRole = UserRole.CITIZEN

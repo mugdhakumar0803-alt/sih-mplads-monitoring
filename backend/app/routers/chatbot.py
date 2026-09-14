@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from ..database import get_db
 from ..auth.dependencies import get_current_user
 from ..models.user import User
+from ..models.work import Work
+import re
 
 router = APIRouter(
     prefix="/chatbot",
@@ -31,45 +33,26 @@ async def chat_with_bot(
     current_user: User = Depends(get_current_user),
 ):
     """Ask the citizen assistance chatbot."""
-    # TODO: Integrate with RAG system for real responses
-    # This is a placeholder that returns template responses
-    
-    message = query.message.lower()
-    
-    # Simple rule-based responses for common queries
-    if "grievance" in message or "complain" in message:
-        response = (
-            "You can file a grievance by providing details about the work and your concern. "
-            "Please include work ID, description, and contact information. "
-            "Our team will review and respond within 7 days."
-        )
-    elif "fund" in message or "release" in message or "money" in message:
-        response = (
-            "Fund releases follow the compliance and eligibility criteria. "
-            "Check the compliance dashboard to see your work's status. "
-            "Funds are typically released monthly for eligible works."
-        )
-    elif "photo" in message or "verification" in message:
-        response = (
-            "Progress photos help us verify work completion. "
-            "Please upload recent photos showing current work status. "
-            "Photos should have date stamp and GPS metadata if possible."
-        )
-    elif "status" in message or "progress" in message:
-        response = (
-            "You can check work status by entering your work ID in the dashboard. "
-            "Status includes allocation, released funds, and completion percentage."
-        )
+    terms = {term for term in re.findall(r"[a-z0-9-]+", query.message.lower()) if len(term) > 2}
+    works = db.query(Work).all()
+    ranked = sorted(
+        works,
+        key=lambda work: len(terms & set(re.findall(r"[a-z0-9-]+", f"{work.work_id} {work.work_title} {work.state}".lower()))),
+        reverse=True,
+    )
+    match = ranked[0] if ranked and terms & set(re.findall(r"[a-z0-9-]+", f"{ranked[0].work_id} {ranked[0].work_title} {ranked[0].state}".lower())) else None
+    if match:
+        response = f"{match.work_title} ({match.work_id}) is {getattr(match.status, 'value', match.status)} in {match.state}. Allocation: ₹{match.allocation_amount:,.0f}. Risk: {match.risk_level or 'not assessed'} ({match.risk_score or 0:.2f})."
+        sources = [f"Verified work record {match.work_id}"]
+        confidence = 0.95
     else:
-        response = (
-            "I'm here to help with questions about MPLADS works, fund releases, grievances, and progress tracking. "
-            "Please ask about any of these topics or visit the dashboard for more details."
-        )
-    
+        response = "No matching verified project record was found. Try a work ID, project title, or state."
+        sources = []
+        confidence = 0.0
     return ChatResponse(
         response=response,
-        sources=["FAQ Database", "Policy Guidelines"],
-        confidence=0.85,
+        sources=sources,
+        confidence=confidence,
     )
 
 

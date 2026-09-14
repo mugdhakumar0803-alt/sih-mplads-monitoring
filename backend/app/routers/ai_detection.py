@@ -1,4 +1,6 @@
 from fastapi import APIRouter
+from pydantic import BaseModel, Field
+from ..ml.duplicates import DuplicatePair, find_duplicate_clusters
 
 router = APIRouter(
     prefix="/ai",
@@ -21,5 +23,4 @@ class DuplicateDetectionRequest(BaseModel):
 @router.post("/duplicates", response_model=list[DuplicatePair])
 def detect_duplicate_works(request: DuplicateDetectionRequest) -> list[DuplicatePair]:
     """Return likely duplicate works from the submitted work records."""
-    works = [Work(**work.model_dump()) for work in request.works]
-    return find_duplicate_clusters(works)
+    return find_duplicate_clusters(request.works)

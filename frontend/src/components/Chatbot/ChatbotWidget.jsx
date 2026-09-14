@@ -25,15 +25,18 @@ function ChatbotWidget() {
     setInput("");
     setTyping(true);
 
-    // Simulate retrieval + generation delay
-    setTimeout(() => {
-      const response = getChatbotResponse(userMessage.text);
+    getChatbotResponse(userMessage.text)
+      .then((response) => {
       setMessages((prev) => [
         ...prev,
         { role: "bot", text: response.answer, noMatch: response.noMatch },
       ]);
       setTyping(false);
-    }, 800);
+      })
+      .catch((error) => {
+        setMessages((prev) => [...prev, { role: "bot", text: error.message, noMatch: true }]);
+        setTyping(false);
+      });
   };
 
   return (

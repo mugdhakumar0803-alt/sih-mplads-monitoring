@@ -42,6 +42,29 @@ async def list_works(
     }
 
 
+@router.get("/dashboard/stats")
+async def dashboard_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    works = db.query(Work).all()
+    total = len(works)
+    completed = sum(1 for work in works if getattr(work.status, "value", work.status) == "Completed")
+    sanctioned = sum(work.allocation_amount or 0 for work in works)
+    high_risk = sum(1 for work in works if work.risk_level == "high")
+    breakdown = {}
+    for work in works:
+        status = getattr(work.status, "value", work.status)
+        breakdown[status] = breakdown.get(status, 0) + 1
+    return {
+        "total_works": total,
+        "total_sanctioned": sanctioned,
+        "completed": completed,
+        "active_anomalies": high_risk,
+        "status_breakdown": breakdown,
+    }
+
+
 @router.get("/{work_id}")
 async def get_work(
     work_id: str,
