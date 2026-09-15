@@ -1,17 +1,36 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
+from datetime import datetime
 
 from ..database import get_db
 from ..auth.dependencies import get_current_user, require_role
 from ..models.user import User, UserRole
 from ..models.fund_release import FundReleaseRecord, ReleaseStatus
 from ..services.fund_release_service import FundReleaseService
+from ..models.work import Work
 
 router = APIRouter(
     prefix="/fund-release",
     tags=["Fund Release"]
 )
+
+
+@router.get("/eligibility/{work_id}")
+async def fund_eligibility(
+    work_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    work = db.query(Work).filter(Work.work_id == work_id).first()
+    if not work:
+        raise HTTPException(status_code=404, detail="Work not found")
+    release = FundReleaseRecord(
+        release_id=f"CHECK-{work_id}", work_id=work_id,
+        sanction_amount=work.allocation_amount, released_amount=0,
+        requested_date=datetime.utcnow(),
+    )
+    return FundReleaseService.evaluate_eligibility(db, release)
 
 
 @router.get("/")

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DashboardLayout from "../components/Common/DashboardLayout";
 import CitizenTracker from "../components/Dashboard/CitizenTracker";
+import MPLeaderboard from "../components/Dashboard/MPLeaderboard";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 
 function CitizenDashboard() {
@@ -8,6 +9,7 @@ function CitizenDashboard() {
 
   const navItems = [
     { label: "Track Works" },
+    { label: "Citizen Performance" },
     { label: "File Grievance" },
   ];
 
@@ -21,6 +23,9 @@ function CitizenDashboard() {
       }))}
     >
       {activeTab === "Track Works" && <CitizenTracker />}
+
+      {activeTab === "Citizen Performance" && <MPLeaderboard />}
+
       {activeTab === "File Grievance" && <GrievancePanel />}
     </DashboardLayout>
   );

@@ -18,6 +18,7 @@ from app.routers.reports import router as reports_router
 from app.routers.audit import router as audit_router
 from app.routers.compliance import router as compliance_router
 from app.routers.ai_detection import router as ai_detection_router
+from app.routers.ratings import router as ratings_router
 
 app = FastAPI(
     title="SIH MPLADS Monitoring & Accountability Platform",
@@ -48,6 +49,17 @@ app.include_router(reports_router)
 app.include_router(audit_router)
 app.include_router(compliance_router)
 app.include_router(ai_detection_router)
+app.include_router(compliance_router)
+app.include_router(photos_router)
+
+
+@app.on_event("startup")
+def initialize_database():
+    try:
+        init_db()
+    except Exception as error:
+        # Keep health/docs available when an external database is temporarily down.
+        print(f"Database initialization skipped: {error}")
 
 
 @app.get("/")
@@ -57,4 +69,6 @@ def root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy"
+    }

@@ -62,8 +62,7 @@ async def search_works(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Search MPLADS works using RAG chatbot."""
-    # TODO: Integrate with semantic search and RAG model
+    """Search verified work records for grounded assistant retrieval."""
     
     from ..models.work import Work
     
