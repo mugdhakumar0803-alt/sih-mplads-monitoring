@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 from ..models.grievance import Grievance, GrievanceStatus, GrievanceSeverity
+from ..models.user import User
 from ..services.sla_engine import compute_sla_status
 import uuid
 from ..services.grievance_access import determine_filing_defaults, get_visible_grievances_query
@@ -14,6 +15,7 @@ class GrievanceService:
     @staticmethod
     def get_all_grievances(
         db: Session,
+        current_user: User,
         work_id: Optional[str] = None,
         status: Optional[GrievanceStatus] = None,
         severity: Optional[GrievanceSeverity] = None,

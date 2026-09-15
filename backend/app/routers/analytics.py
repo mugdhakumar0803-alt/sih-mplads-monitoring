@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from database import get_db          # adjust import to your actual db session
-from models import Work, Grievance, CitizenFeedback  # adjust to your actual models
+from app.database import get_db
+from app.models import Work, Grievance, Rating
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
@@ -68,8 +68,8 @@ def constituency_ranking(metric: str = "completion", db: Session = Depends(get_d
 @router.get("/citizen-verification")
 def citizen_verification(db: Session = Depends(get_db)):
     rows = (
-        db.query(CitizenFeedback.status, func.count(CitizenFeedback.id))
-        .group_by(CitizenFeedback.status)
+        db.query(Grievance.status, func.count(Grievance.id))
+        .group_by(Grievance.status)
         .all()
     )
     return [{"status": s, "count": c} for s, c in rows]
@@ -79,11 +79,11 @@ def citizen_verification(db: Session = Depends(get_db)):
 @router.get("/rating-distribution")
 def rating_distribution(db: Session = Depends(get_db)):
     rows = (
-        db.query(CitizenFeedback.rating, func.count(CitizenFeedback.id))
-        .group_by(CitizenFeedback.rating)
+        db.query(Rating.overall_score, func.count(Rating.id))
+        .group_by(Rating.overall_score)
         .all()
     )
-    return [{"stars": r, "count": c} for r, c in rows]
+    return [{"stars": score, "count": count} for score, count in rows]
 
 
 # 6. Grievance Resolution Trend (line, monthly)
@@ -91,7 +91,7 @@ def rating_distribution(db: Session = Depends(get_db)):
 def grievance_trend(db: Session = Depends(get_db)):
     rows = (
         db.query(
-            func.to_char(Grievance.filed_on, 'Mon').label("month"),
+            func.to_char(Grievance.created_at, 'Mon').label("month"),
             func.count(Grievance.id).label("filed"),
             func.sum(func.cast(Grievance.status == "resolved", func.Integer())).label("resolved"),
         )

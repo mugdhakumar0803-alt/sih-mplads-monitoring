@@ -35,7 +35,7 @@ async def list_works(
     current_user: User = Depends(get_current_user),
 ):
     works = WorkService.get_all_works(
-        db, user=current_user, state=state, skip=skip, limit=limit
+        db, state=state, skip=skip, limit=limit
     )
     write_audit(
         db, current_user, "WORKS_LIST_VIEWED", request,
