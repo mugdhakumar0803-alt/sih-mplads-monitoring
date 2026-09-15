@@ -1,7 +1,7 @@
 # Project delay analysis
 from typing import List, Dict
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @dataclass
@@ -27,8 +27,8 @@ class DelayPredictor:
     ) -> DelayAnalysis:
         """Analyze delay for a work based on progress."""
         current_date = datetime.utcnow()
-        expected_completion = recommended_date.replace(
-            day=recommended_date.day + expected_duration_days
+        expected_completion = recommended_date + timedelta(
+            days=expected_duration_days
         )
         
         # Calculate days delayed
