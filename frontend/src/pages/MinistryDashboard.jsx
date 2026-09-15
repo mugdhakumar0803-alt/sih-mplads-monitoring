@@ -5,6 +5,7 @@ import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
 import SystemicPatterns from "../components/Common/SystemicPatterns";
 import EscalationTracker from "../components/Common/EscalationTracker";
+import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
 
 function MinistryDashboard() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ function MinistryDashboard() {
     { label: "National Overview" },
     { label: "Systemic Patterns" },
     { label: "Escalated Cases" },
+    { label: "Ask AI" },
   ];
 
   return (
@@ -38,6 +40,7 @@ function MinistryDashboard() {
       )}
       {activeTab === "Systemic Patterns" && <SystemicPatterns />}
       {activeTab === "Escalated Cases" && <EscalationTracker />}
+      {activeTab === "Ask AI" && <ChatbotWidget />}
     </DashboardLayout>
   );
 }

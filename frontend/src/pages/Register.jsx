@@ -11,15 +11,27 @@ const roles = [
   { id: "ministry", label: "Ministry", icon: "🏢", path: "/ministry" },
 ];
 
+// Roles that require an admin to approve them before they can log in.
+// Backend mirrors this — see auth/routes.py.
+const REQUIRES_APPROVAL = ["mp", "district", "state", "ministry"];
+
 function Register() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [state, setState] = useState("");
+  const [constituency, setConstituency] = useState("");
+  const [house, setHouse] = useState("lok_sabha");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submittedPending, setSubmittedPending] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  const needsState = ["mp", "district", "state"].includes(selectedRole);
+  const needsConstituency = selectedRole === "mp";
+  const needsHouse = selectedRole === "mp";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,9 +39,20 @@ function Register() {
     setError("");
     setSubmitting(true);
     try {
-      await register(selectedRole, name, email, password);
-      const role = roles.find((r) => r.id === selectedRole);
-      navigate(role.path);
+      await register(selectedRole, name, email, password, {
+        state: needsState ? state : undefined,
+        constituency: needsConstituency ? constituency : undefined,
+        house: needsHouse ? house : undefined,
+      });
+
+      if (REQUIRES_APPROVAL.includes(selectedRole)) {
+        // Account was created but is pending approval — it can't log in
+        // yet, so don't try to navigate into the dashboard.
+        setSubmittedPending(true);
+      } else {
+        const role = roles.find((r) => r.id === selectedRole);
+        navigate(role.path);
+      }
     } catch (err) {
       setError(err.message || "Registration failed — please try again.");
     } finally {
@@ -47,7 +70,20 @@ function Register() {
         </p>
       </div>
 
-      {!selectedRole && (
+      {submittedPending && (
+        <div className="bg-white border border-gray-200 rounded-lg p-8 w-full max-w-sm text-center">
+          <p className="text-lg font-bold text-navy mb-2">Account created</p>
+          <p className="text-sm text-gray-500">
+            Your account is awaiting approval from an administrator. You'll
+            be able to log in once it's approved.
+          </p>
+          <Link to="/login" className="text-navy font-semibold text-sm mt-4 inline-block">
+            Back to login
+          </Link>
+        </div>
+      )}
+
+      {!submittedPending && !selectedRole && (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl w-full">
           {roles.map((role) => (
             <button
@@ -64,7 +100,7 @@ function Register() {
         </div>
       )}
 
-      {selectedRole && (
+      {!submittedPending && selectedRole && (
         <div className="bg-white border border-gray-200 rounded-lg p-8 w-full max-w-sm">
           <button
             onClick={() => setSelectedRole(null)}
@@ -75,6 +111,13 @@ function Register() {
           <h2 className="text-lg font-bold text-navy mb-4">
             Register as {roles.find((r) => r.id === selectedRole)?.label}
           </h2>
+
+          {REQUIRES_APPROVAL.includes(selectedRole) && (
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-3">
+              This role needs approval from an administrator before you can log in.
+            </p>
+          )}
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input
               type="text"
@@ -97,6 +140,38 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 rounded px-3 py-2 text-sm"
             />
+
+            {needsHouse && (
+              <select
+                value={house}
+                onChange={(e) => setHouse(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              >
+                <option value="lok_sabha">Lok Sabha</option>
+                <option value="rajya_sabha">Rajya Sabha</option>
+              </select>
+            )}
+
+            {needsState && (
+              <input
+                type="text"
+                placeholder="State"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+            )}
+
+            {needsConstituency && (
+              <input
+                type="text"
+                placeholder="Constituency"
+                value={constituency}
+                onChange={(e) => setConstituency(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+            )}
+
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <button
               type="submit"

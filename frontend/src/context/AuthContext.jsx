@@ -27,16 +27,27 @@ export function AuthProvider({ children }) {
     return profile;
   };
 
-  // NEW — this didn't exist before, which is why Register.jsx crashed
-  // silently on submit. Registers with the real backend, then logs the
-  // user in immediately afterward so they land straight in the app.
-  const register = async (role, name, email, password) => {
+  const ROLES_REQUIRING_APPROVAL = ["mp", "district", "state", "ministry"];
+
+  // Registers with the real backend. Citizens are auto-approved and get
+  // logged straight in. MP/District/State/Ministry accounts are created
+  // as "pending" — the backend rejects login for those until an admin
+  // approves them (see approve_user.py) — so we don't attempt to log
+  // them in immediately.
+  const register = async (role, name, email, password, extra = {}) => {
     await registerRequest({
       username: email,   // backend expects `username` — using email keeps it unique and simple
       email,
       password,
       role,
+      state: extra.state,
+      constituency: extra.constituency,
+      house: extra.house,
     });
+
+    if (ROLES_REQUIRING_APPROVAL.includes(role)) {
+      return null;
+    }
     return login(email, password);
   };
 

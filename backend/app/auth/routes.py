@@ -54,15 +54,6 @@ async def register(
             detail="Invalid role",
         )
 
-    if role != UserRole.CITIZEN:
-        raise HTTPException(
-            status_code=403,
-            detail=(
-                "Privileged accounts must be "
-                "provisioned by an administrator"
-            ),
-        )
-
     existing_user = (
         db.query(User)
         .filter(
@@ -84,11 +75,19 @@ async def register(
         hashed_password=get_password_hash(
             user_data.password
         ),
-        role=UserRole.CITIZEN,
-        approval_status="approved",
+        role=role,
+        # Citizens get in instantly. MP / District / State / Ministry /
+        # Admin accounts need a human to approve them first — but they
+        # CAN now register (previously this was outright blocked).
+        approval_status=(
+            "approved" if role == UserRole.CITIZEN else "pending"
+        ),
         constituency_id=user_data.constituency_id,
         district_id=user_data.district_id,
         state_id=user_data.state_id,
+        state=user_data.state,
+        constituency=user_data.constituency,
+        house=user_data.house,
     )
 
     db.add(new_user)
