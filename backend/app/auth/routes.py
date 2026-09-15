@@ -28,8 +28,8 @@ async def register(
     if role in {
         UserRole.ADMIN,
         UserRole.MP,
-        UserRole.DISTRICT,
-        UserRole.STATE,
+        UserRole.DISTRICT_OFFICIAL,
+        UserRole.STATE_OFFICIAL,
         UserRole.MINISTRY,
     }:
         raise HTTPException(

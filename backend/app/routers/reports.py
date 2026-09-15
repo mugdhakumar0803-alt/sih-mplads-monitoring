@@ -38,8 +38,8 @@ async def sign_report(
     current_user: User = Depends(get_current_user),
 ):
     if current_user.role not in {
-        UserRole.ADMIN, UserRole.MINISTRY, UserRole.STATE,
-        UserRole.DISTRICT, UserRole.MP,
+        UserRole.ADMIN, UserRole.MINISTRY, UserRole.STATE_OFFICIAL,
+        UserRole.DISTRICT_OFFICIAL, UserRole.MP,
     }:
         raise HTTPException(status_code=403, detail="Only officials may sign reports")
 

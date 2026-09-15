@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import Optional
 from datetime import datetime
 
 from ..database import get_db
-from ..auth.dependencies import get_current_user, require_role
+from ..auth.dependencies import get_current_user, require_role, write_audit
 from ..models.user import User, UserRole
 from ..models.fund_release import FundReleaseRecord, ReleaseStatus
 from ..services.fund_release_service import FundReleaseService
@@ -98,6 +98,7 @@ async def get_fund_release(
 @router.post("/{release_id}/approve")
 async def approve_fund_release(
     release_id: str,
+    request: Request,
     approval_notes: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(UserRole.ADMIN, UserRole.DISTRICT_OFFICIAL)),
@@ -106,30 +107,53 @@ async def approve_fund_release(
     try:
         release = FundReleaseService.approve_release(db, release_id, approval_notes)
     except ValueError as error:
+        write_audit(
+            db, current_user, "FUND_RELEASE_APPROVE_FAILED", request,
+            resource_type="fund_release", resource_id=release_id,
+            status_value="FAILURE", details={"error": str(error)},
+        )
         raise HTTPException(status_code=409, detail=str(error))
     if not release:
         raise HTTPException(status_code=404, detail="Release not found")
-    
+
+    write_audit(
+        db, current_user, "FUND_RELEASE_APPROVED", request,
+        resource_type="fund_release", resource_id=release_id,
+        details={"approval_notes": approval_notes},
+    )
+
     return {"status": "approved", "release_id": release.release_id}
 
 
 @router.post("/{release_id}/release")
 async def release_funds(
     release_id: str,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(UserRole.ADMIN, UserRole.STATE_OFFICIAL)),
 ):
     """Release funds for an approved request."""
     release = FundReleaseService.release_funds(db, release_id)
     if not release:
+        write_audit(
+            db, current_user, "FUND_RELEASE_RELEASE_FAILED", request,
+            resource_type="fund_release", resource_id=release_id, status_value="FAILURE",
+        )
         raise HTTPException(status_code=404, detail="Release not found or not approved")
-    
+
+    write_audit(
+        db, current_user, "FUND_RELEASED", request,
+        resource_type="fund_release", resource_id=release_id,
+        details={"amount": release.released_amount},
+    )
+
     return {"status": "released", "amount": release.released_amount}
 
 
 @router.post("/{release_id}/reject")
 async def reject_fund_release(
     release_id: str,
+    request: Request,
     reason: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(UserRole.ADMIN, UserRole.DISTRICT_OFFICIAL)),
@@ -137,6 +161,16 @@ async def reject_fund_release(
     """Reject a fund release request."""
     release = FundReleaseService.reject_release(db, release_id, reason)
     if not release:
+        write_audit(
+            db, current_user, "FUND_RELEASE_REJECT_FAILED", request,
+            resource_type="fund_release", resource_id=release_id, status_value="FAILURE",
+        )
         raise HTTPException(status_code=404, detail="Release not found")
-    
+
+    write_audit(
+        db, current_user, "FUND_RELEASE_REJECTED", request,
+        resource_type="fund_release", resource_id=release_id,
+        details={"reason": reason},
+    )
+
     return {"status": "rejected", "release_id": release.release_id}

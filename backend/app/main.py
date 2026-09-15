@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
-from app.database import Base, engine
+from app.database import Base, engine, init_db
 from app.models.user import User
 from app.models.work import Work
 from app.models.grievance import Grievance
@@ -19,6 +19,8 @@ from app.routers.audit import router as audit_router
 from app.routers.compliance import router as compliance_router
 from app.routers.ai_detection import router as ai_detection_router
 from app.routers.ratings import router as ratings_router
+from app.routers.photos import router as photos_router
+from app.routers.dashboard import router as dashboard_router
 
 app = FastAPI(
     title="SIH MPLADS Monitoring & Accountability Platform",
@@ -49,7 +51,8 @@ app.include_router(reports_router)
 app.include_router(audit_router)
 app.include_router(compliance_router)
 app.include_router(ai_detection_router)
-app.include_router(compliance_router)
+app.include_router(ratings_router)
+app.include_router(dashboard_router)
 app.include_router(photos_router)
 
 

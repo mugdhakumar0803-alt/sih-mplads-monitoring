@@ -13,9 +13,9 @@ def work_is_in_scope(work: Work, user: User) -> bool:
             bool(user.constituency_id)
             and work.constituency_id == user.constituency_id
         )
-    if user.role == UserRole.DISTRICT:
+    if user.role == UserRole.DISTRICT_OFFICIAL:
         return bool(user.district_id) and work.district_id == user.district_id
-    if user.role == UserRole.STATE:
+    if user.role == UserRole.STATE_OFFICIAL:
         return bool(user.state_id) and work.state_id == user.state_id
     return False
 
