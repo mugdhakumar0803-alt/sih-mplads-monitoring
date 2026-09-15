@@ -99,7 +99,7 @@ When PostgreSQL is not available, run the backend against SQLite from the reposi
 DATABASE_URL=sqlite:////Users/nandini/Desktop/sih-mplads-monitoring/local-dev.db \
 /Users/nandini/Desktop/sih-mplads-monitoring/.venv/bin/python -m uvicorn app.main:app \
 	--app-dir /Users/nandini/Desktop/sih-mplads-monitoring/backend \
-	--host 127.0.0.1 --port 8000
+	--host 127.0.0.1 --port 8000 --loop asyncio
 ```
 
 Import into the same database with the matching absolute `DATABASE_URL`, then open `http://127.0.0.1:5173/` for the Vite frontend.

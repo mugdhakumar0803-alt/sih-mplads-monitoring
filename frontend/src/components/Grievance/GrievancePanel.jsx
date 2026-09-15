@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fileGrievance, getGrievances } from "../../api/client";
+import { fileGrievance, getGrievances, getWorks } from "../../api/client";
 
 const escalationLabels = { district: "District Authority", state: "State Authority", mp: "Member of Parliament", ministry: "Ministry" };
 
@@ -8,19 +8,30 @@ function GrievancePanel({ presetWorkId, presetWorkTitle }) {
   const [showForm, setShowForm] = useState(!!presetWorkId);
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [availableWorks, setAvailableWorks] = useState([]);
+  const [selectedWorkId, setSelectedWorkId] = useState(presetWorkId || "");
 
   useEffect(() => {
     getGrievances(presetWorkId).then((result) => setGrievances(result.grievances)).catch((requestError) => setError(requestError.message));
   }, [presetWorkId]);
 
+  useEffect(() => {
+    if (!presetWorkId && showForm) {
+      getWorks("?limit=100").then((result) => setAvailableWorks(result.works || [])).catch((requestError) => setError(requestError.message));
+    }
+  }, [presetWorkId, showForm]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!description.trim()) return;
+    if (!description.trim() || !selectedWorkId) {
+      setError("Select a project and describe the issue.");
+      return;
+    }
 
     setError("");
     try {
-      await fileGrievance({ work_id: presetWorkId || null, citizen_name: "Authenticated citizen", description, severity: "medium" });
-      const result = await getGrievances(presetWorkId);
+      await fileGrievance({ work_id: selectedWorkId, citizen_name: "Authenticated citizen", description, severity: "medium" });
+      const result = await getGrievances(selectedWorkId);
       setGrievances(result.grievances);
       setDescription("");
       setShowForm(!presetWorkId);
@@ -56,6 +67,7 @@ function GrievancePanel({ presetWorkId, presetWorkTitle }) {
           className="bg-white border border-gray-200 rounded-lg p-4 mb-6"
         >
           {presetWorkTitle && <p className="text-sm text-navy mb-3">Work: {presetWorkTitle}</p>}
+          {!presetWorkId && <select value={selectedWorkId} onChange={(event) => setSelectedWorkId(event.target.value)} className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-3"><option value="">Select a project</option>{availableWorks.map((work) => <option key={work.work_id} value={work.work_id}>{work.work_id} · {work.title}</option>)}</select>}
           <label className="text-xs text-gray-500 block mb-1">
             Describe the issue with this work
           </label>
