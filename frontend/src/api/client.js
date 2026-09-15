@@ -1,20 +1,33 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/backend-api";
 
 export async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem("mplads_token");
   const isFormData = options.body instanceof FormData;
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-    ...options,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    });
+  } catch {
+    throw new Error("Cannot connect to the backend. Start the API at http://127.0.0.1:8000 and try again.");
+  }
 
   if (!response.ok) {
-    const detail = await response.text();
+    const body = await response.text();
+    let detail = body;
+    try {
+      const parsed = JSON.parse(body);
+      detail = Array.isArray(parsed.detail)
+        ? parsed.detail.map((item) => item.msg).join(", ")
+        : parsed.detail || body;
+    } catch {
+      // Keep the plain response when the backend did not return JSON.
+    }
     throw new Error(detail || `API error: ${response.status}`);
   }
 
@@ -49,6 +62,10 @@ export function getWorks(params = "") {
 
 export function getWork(workId) {
   return apiRequest(`/works/${encodeURIComponent(workId)}`);
+}
+
+export function getWorkRisk(workId) {
+  return apiRequest(`/ai/risk/${encodeURIComponent(workId)}`);
 }
 
 export function getGrievances(workId = "") {

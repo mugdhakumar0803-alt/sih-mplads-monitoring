@@ -16,10 +16,21 @@ def serialize_work(w):
     return {
         "work_id": w.work_id,
         "title": w.work_title,
-        "category": w.category,
+        "category": getattr(w.category, "value", w.category),
         "state": w.state,
-        "status": w.status,
+        "status": getattr(w.status, "value", w.status),
         "allocation_amount": w.allocation_amount,
+        "sanctioned_amount": w.sanctioned_amount,
+        "expenditure_amount": w.expenditure_amount,
+        "recommended_date": w.recommended_date,
+        "sanction_date": w.sanction_date,
+        "completion_date": w.completion_date,
+        "district": w.district,
+        "block": w.block,
+        "village": w.village,
+        "ward": w.ward,
+        "source_dataset": w.source_dataset,
+        "source_record_id": w.source_record_id,
         "risk_score": w.risk_score,
         "risk_level": w.risk_level,
     }
@@ -35,7 +46,7 @@ async def list_works(
     current_user: User = Depends(get_current_user),
 ):
     works = WorkService.get_all_works(
-        db, state=state, skip=skip, limit=limit
+        db, state=state, skip=skip, limit=limit, current_user=current_user
     )
     write_audit(
         db, current_user, "WORKS_LIST_VIEWED", request,

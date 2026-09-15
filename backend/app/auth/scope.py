@@ -10,13 +10,13 @@ def work_is_in_scope(work: Work, user: User) -> bool:
         return True  # all currently exposed work data is public
     if user.role == UserRole.MP:
         return (
-            bool(user.constituency_id)
-            and work.constituency_id == user.constituency_id
+            bool(user.constituency)
+            and work.constituency == user.constituency
         )
     if user.role == UserRole.DISTRICT_OFFICIAL:
-        return bool(user.district_id) and work.district_id == user.district_id
+        return bool(user.district_id) and work.district == user.district_id
     if user.role == UserRole.STATE_OFFICIAL:
-        return bool(user.state_id) and work.state_id == user.state_id
+        return bool(user.state) and work.state == user.state
     return False
 
 

@@ -10,7 +10,7 @@ const statusColors = {
 };
 
 function progressFor(status) {
-  return status === "Completed" ? 100 : status === "Ongoing" ? 50 : 0;
+  return status === "Completed" ? 100 : null;
 }
 
 function WorksRegistry() {
@@ -51,10 +51,11 @@ function WorksRegistry() {
               return <tr key={work.work_id} onClick={() => navigate(`/work/${work.work_id}`)} className={`cursor-pointer hover:bg-blue-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                 <td className="p-3"><p className="font-semibold text-navy">{work.title}</p><p className="text-xs text-gray-400">{work.work_id}</p></td>
                 <td className="p-3">{work.category}</td><td className="p-3">{work.state}</td><td className="p-3">₹{(work.allocation_amount / 100000).toFixed(1)}L</td>
-                <td className="p-3"><div className="w-24 bg-gray-200 rounded-full h-2 mb-1"><div className="h-2 rounded-full bg-green-400" style={{ width: `${progress}%` }} /></div><span className="text-xs text-gray-500">{progress}%</span></td>
+                <td className="p-3">{progress == null ? <span className="text-xs text-gray-400">Data unavailable</span> : <><div className="w-24 bg-gray-200 rounded-full h-2 mb-1"><div className="h-2 rounded-full bg-green-400" style={{ width: `${progress}%` }} /></div><span className="text-xs text-gray-500">{progress}%</span></>}</td>
                 <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${statusColors[work.status] || "bg-gray-100 text-gray-600"}`}>{work.status}</span></td><td className="p-3">{work.risk_level || "Not assessed"}</td>
               </tr>;
             })}
+            {filteredWorks.length === 0 && <tr><td colSpan="7" className="p-8 text-center text-sm text-gray-400">No works match this MP and filter.</td></tr>}
           </tbody>
         </table>
       </div>

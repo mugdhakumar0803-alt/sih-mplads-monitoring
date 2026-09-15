@@ -28,7 +28,13 @@ def seed() -> None:
     db = SessionLocal()
     try:
         for username, role in DEMO_USERS.items():
-            if db.query(User).filter(User.username == username).first():
+            existing_user = db.query(User).filter(User.username == username).first()
+            if existing_user:
+                if username == "demo_mp" and not existing_user.constituency:
+                    first_work = db.query(Work).order_by(Work.id).first()
+                    if first_work:
+                        existing_user.constituency = first_work.constituency
+                        existing_user.state = first_work.state
                 continue
             db.add(User(
                 username=username,

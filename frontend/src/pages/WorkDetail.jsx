@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getGrievances, getPhotos, getWork } from "../api/client";
+import { getGrievances, getPhotos, getWork, getWorkRisk } from "../api/client";
 import PhotoUpload from "../components/PhotoVerification/PhotoUpload";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 
@@ -10,14 +10,16 @@ function WorkDetail() {
   const [work, setWork] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [grievances, setGrievances] = useState([]);
+  const [risk, setRisk] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([getWork(workId), getPhotos(workId), getGrievances(workId)])
-      .then(([workResult, photoResult, grievanceResult]) => {
+    Promise.all([getWork(workId), getPhotos(workId), getGrievances(workId), getWorkRisk(workId)])
+      .then(([workResult, photoResult, grievanceResult, riskResult]) => {
         setWork(workResult);
         setPhotos(photoResult.photos);
         setGrievances(grievanceResult.grievances);
+        setRisk(riskResult);
       })
       .catch((requestError) => setError(requestError.message));
   }, [workId]);
@@ -36,7 +38,9 @@ function WorkDetail() {
           <div><p className="text-xs text-gray-400">Allocation</p><p className="font-semibold text-navy">₹{work.allocation_amount?.toLocaleString()}</p></div>
           <div><p className="text-xs text-gray-400">Status</p><p className="font-semibold text-navy">{work.status}</p></div>
           <div><p className="text-xs text-gray-400">Risk</p><p className="font-semibold text-navy">{work.risk_level || "Not assessed"}</p></div>
+          <div><p className="text-xs text-gray-400">Expenditure</p><p className="font-semibold text-navy">{work.expenditure_amount == null ? "Data unavailable" : `₹${work.expenditure_amount.toLocaleString()}`}</p></div>
         </div>
+        {risk && <div className="mt-5 border-t pt-4"><p className="font-semibold text-navy">Calculated risk: {Math.round(risk.risk_score * 100)} / 100 ({risk.risk_level})</p><p className="text-xs text-gray-500 mt-1">Model: {risk.model_version}. This is a potential-irregularity signal, not a fraud finding.</p>{risk.signals.length ? <ul className="text-sm text-gray-600 list-disc list-inside mt-2">{risk.signals.map((signal) => <li key={signal.type}>{signal.reason}</li>)}</ul> : <p className="text-sm text-gray-500 mt-2">No risk signals identified from available data.</p>}</div>}
       </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div>

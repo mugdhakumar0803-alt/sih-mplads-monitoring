@@ -42,3 +42,6 @@ class UserRegister(BaseModel):
     constituency_id: Optional[str] = None
     district_id: Optional[str] = None
     state_id: Optional[str] = None
+    state: Optional[str] = None
+    constituency: Optional[str] = None
+    house: Optional[str] = None

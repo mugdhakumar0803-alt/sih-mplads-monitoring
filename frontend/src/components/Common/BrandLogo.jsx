@@ -1,7 +1,6 @@
-import React from "react";
 import panchsetuLogo from "../../assets/panchsetu-logo.png";
 
-function BrandLogo({ compact = false, dark = false }) {
+function BrandLogo({ compact = false }) {
   return (
     <div className="flex flex-col items-center justify-center">
       <img

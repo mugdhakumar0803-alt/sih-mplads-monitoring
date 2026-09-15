@@ -28,6 +28,8 @@ from ..database import get_db
 from ..models.user import (
     User,
     UserRole,
+    ApprovalStatus,
+    ParliamentHouse,
 )
 from ..models.revoked_token import RevokedToken
 from ..config import settings
@@ -46,22 +48,24 @@ async def register(
     db: Session = Depends(get_db),
 ):
 
+    role_aliases = {
+        "district": UserRole.DISTRICT_OFFICIAL,
+        "state": UserRole.STATE_OFFICIAL,
+    }
     try:
-        role = UserRole(user_data.role)
+        role = role_aliases[user_data.role] if user_data.role in role_aliases else UserRole(user_data.role)
     except ValueError:
         raise HTTPException(
             status_code=400,
             detail="Invalid role",
         )
 
-    if role != UserRole.CITIZEN:
-        raise HTTPException(
-            status_code=403,
-            detail=(
-                "Privileged accounts must be "
-                "provisioned by an administrator"
-            ),
-        )
+    house = None
+    if user_data.house:
+        try:
+            house = ParliamentHouse(user_data.house)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid parliament house")
 
     existing_user = (
         db.query(User)
@@ -84,11 +88,18 @@ async def register(
         hashed_password=get_password_hash(
             user_data.password
         ),
-        role=UserRole.CITIZEN,
-        approval_status="approved",
+        role=role,
+        approval_status=(
+            ApprovalStatus.PENDING
+            if role != UserRole.CITIZEN
+            else ApprovalStatus.APPROVED
+        ),
         constituency_id=user_data.constituency_id,
         district_id=user_data.district_id,
         state_id=user_data.state_id,
+        state=user_data.state,
+        constituency=user_data.constituency,
+        house=house,
     )
 
     db.add(new_user)
@@ -109,6 +120,7 @@ async def register(
         "username": new_user.username,
         "email": new_user.email,
         "role": new_user.role.value,
+        "approval_status": new_user.approval_status.value,
     }
 
 
@@ -290,4 +302,7 @@ async def get_profile(
             current_user.district_id,
         "state_id":
             current_user.state_id,
+        "state": current_user.state,
+        "constituency": current_user.constituency,
+        "house": current_user.house.value if current_user.house else None,
     }

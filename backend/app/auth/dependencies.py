@@ -170,9 +170,18 @@ async def get_current_user(
             detail="Token has been revoked",
         )
 
+    try:
+        user_id = uuid.UUID(token_data.user_id)
+    except (ValueError, TypeError, AttributeError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token subject",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     user = (
         db.query(User)
-        .filter(User.id == token_data.user_id)
+        .filter(User.id == user_id)
         .first()
     )
 

@@ -30,14 +30,15 @@ export function AuthProvider({ children }) {
   // NEW — this didn't exist before, which is why Register.jsx crashed
   // silently on submit. Registers with the real backend, then logs the
   // user in immediately afterward so they land straight in the app.
-  const register = async (role, name, email, password) => {
-    await registerRequest({
-      username: email,   // backend expects `username` — using email keeps it unique and simple
-      email,
-      password,
-      role,
+  const register = async (userData) => {
+    const registration = await registerRequest({
+      username: userData.username || userData.email,
+      ...userData,
     });
-    return login(email, password);
+    if (registration.approval_status === "approved") {
+      return login(userData.username || userData.email, userData.password);
+    }
+    return registration;
   };
 
   const logout = () => {

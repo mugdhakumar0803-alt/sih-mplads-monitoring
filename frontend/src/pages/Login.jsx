@@ -22,6 +22,10 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (!username.trim() || !password) {
+      setError("Enter your username and password.");
+      return;
+    }
     try {
       const profile = await login(username, password);
       const role = roles.find((r) => r.id === profile.role);

@@ -6,6 +6,9 @@ from ..database import get_db
 from ..auth.dependencies import get_current_user
 from ..models.user import User
 from ..models.work import Work
+from ..models.grievance import Grievance, GrievanceStatus
+from ..models.fund_release import FundReleaseRecord
+from ..models.user import UserRole
 import re
 
 router = APIRouter(
@@ -34,7 +37,18 @@ async def chat_with_bot(
 ):
     """Ask the citizen assistance chatbot."""
     terms = {term for term in re.findall(r"[a-z0-9-]+", query.message.lower()) if len(term) > 2}
-    works = db.query(Work).all()
+    work_query = db.query(Work)
+    if current_user.role == UserRole.MP and current_user.constituency:
+        work_query = work_query.filter(Work.constituency == current_user.constituency)
+    elif current_user.role == UserRole.STATE_OFFICIAL and current_user.state:
+        work_query = work_query.filter(Work.state == current_user.state)
+    if {"grievance", "grievances", "complaint", "complaints"} & terms:
+        count = db.query(Grievance).filter(Grievance.status != GrievanceStatus.RESOLVED).count()
+        return ChatResponse(response=f"There are {count} unresolved grievances in your permitted view.", sources=["Verified grievance records"], confidence=0.9)
+    if {"fund", "funds", "release", "releases"} & terms:
+        count = db.query(FundReleaseRecord).count()
+        return ChatResponse(response=f"There are {count} fund release records in the system.", sources=["Verified fund release records"], confidence=0.9)
+    works = work_query.all()
     ranked = sorted(
         works,
         key=lambda work: len(terms & set(re.findall(r"[a-z0-9-]+", f"{work.work_id} {work.work_title} {work.state}".lower()))),
@@ -67,7 +81,12 @@ async def search_works(
     from ..models.work import Work
     
     # Simple text search for now
-    works = db.query(Work).filter(
+    work_query = db.query(Work)
+    if current_user.role == UserRole.MP and current_user.constituency:
+        work_query = work_query.filter(Work.constituency == current_user.constituency)
+    elif current_user.role == UserRole.STATE_OFFICIAL and current_user.state:
+        work_query = work_query.filter(Work.state == current_user.state)
+    works = work_query.filter(
         (Work.work_title.ilike(f"%{query}%")) |
         (Work.state.ilike(f"%{query}%")) |
         (Work.work_id.ilike(f"%{query}%"))

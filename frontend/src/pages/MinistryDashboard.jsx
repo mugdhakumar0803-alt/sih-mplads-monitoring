@@ -5,6 +5,7 @@ import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
 import SystemicPatterns from "../components/Common/SystemicPatterns";
 import EscalationTracker from "../components/Common/EscalationTracker";
+import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
 
 function MinistryDashboard() {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ function MinistryDashboard() {
       )}
       {activeTab === "Systemic Patterns" && <SystemicPatterns />}
       {activeTab === "Escalated Cases" && <EscalationTracker />}
+      <div className="mt-6"><ChatbotWidget /></div>
     </DashboardLayout>
   );
 }

@@ -6,6 +6,7 @@ from ..database import get_db
 from ..auth.dependencies import get_current_user, write_audit
 from ..models.user import User, UserRole
 from ..models.grievance import Grievance, GrievanceStatus, GrievanceSeverity
+from ..models.work import Work
 from ..services.grievance_service import GrievanceService
 
 router = APIRouter(
@@ -107,6 +108,11 @@ async def file_grievance(
     current_user: User = Depends(get_current_user),
 ):
     """File a new grievance. Open to any authenticated user, including citizens."""
+    work_id = grievance_data.get("work_id")
+    if not work_id or not db.query(Work).filter(Work.work_id == work_id).first():
+        raise HTTPException(status_code=400, detail="A valid work_id is required")
+    grievance_data["filed_by_user_id"] = current_user.id
+    grievance_data["filed_by_role"] = current_user.role.value
     grievance = GrievanceService.create_grievance(db, grievance_data)
 
     write_audit(
@@ -119,6 +125,25 @@ async def file_grievance(
         "status": "registered",
         "message": "Grievance filed successfully",
     }
+
+
+@router.post("/run-sla-check")
+async def run_sla_check(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role not in OFFICIAL_ROLES:
+        raise HTTPException(status_code=403, detail="Only officials may run SLA checks")
+    open_grievances = db.query(Grievance).filter(Grievance.status.notin_([GrievanceStatus.RESOLVED, GrievanceStatus.CLOSED])).all()
+    escalated = []
+    for grievance in open_grievances:
+        previous = grievance.current_escalation_level
+        updated = GrievanceService.check_and_apply_escalation(db, grievance.grievance_id)
+        if updated and updated.current_escalation_level != previous:
+            escalated.append({"grievance_id": updated.grievance_id, "previous_level": previous, "new_level": updated.current_escalation_level})
+    write_audit(db, current_user, "SLA_CHECK_RUN", request, resource_type="grievance", details={"escalated": len(escalated)})
+    return {"checked": len(open_grievances), "escalated": escalated}
 
 
 @router.put("/{grievance_id}/status")

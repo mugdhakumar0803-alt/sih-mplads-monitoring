@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, case
 from app.database import get_db
 from app.models import Work, Grievance, Rating
+from app.models.work import WorkStatus
+from app.models.grievance import GrievanceStatus
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
@@ -10,14 +12,14 @@ router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 # 1. Fund Utilization by Work (stacked bar)
 @router.get("/fund-utilization")
 def fund_utilization(db: Session = Depends(get_db)):
-    works = db.query(Work).limit(20).all()   # or filter by constituency/MP
+    works = db.query(Work).limit(20).all()
     return [
         {
-            "work": w.name,
-            "allocated": w.allocated_amount,
-            "released": w.released_amount,
-            "utilized": w.utilized_amount,
-            "remaining": w.allocated_amount - w.utilized_amount,
+            "work": w.work_title,
+            "allocated": w.allocation_amount,
+            "released": 0,
+            "utilized": 0,
+            "remaining": w.allocation_amount,
         }
         for w in works
     ]
@@ -29,11 +31,10 @@ def progress_vs_utilization(db: Session = Depends(get_db)):
     works = db.query(Work).all()
     return [
         {
-            "work": w.name,
-            "month": w.last_updated.strftime("%b"),
-            "physical_progress_pct": w.physical_progress_pct,
-            "financial_utilization_pct": (w.utilized_amount / w.allocated_amount) * 100
-            if w.allocated_amount else 0,
+            "work": w.work_title,
+            "month": w.updated_at.strftime("%b") if w.updated_at else "N/A",
+            "physical_progress_pct": 100 if w.status == WorkStatus.COMPLETED else 0,
+            "financial_utilization_pct": 100 if w.status == WorkStatus.COMPLETED else 0,
         }
         for w in works
     ]
@@ -55,7 +56,9 @@ def risk_distribution(db: Session = Depends(get_db)):
 def constituency_ranking(metric: str = "completion", db: Session = Depends(get_db)):
     # metric: completion | utilization | satisfaction | compliance
     rows = (
-        db.query(Work.constituency, func.avg(Work.physical_progress_pct).label("score"))
+        db.query(Work.constituency, func.avg(
+            case((Work.status == WorkStatus.COMPLETED, 100), else_=0)
+        ).label("score"))
         .group_by(Work.constituency)
         .order_by(func.avg(Work.physical_progress_pct).desc())
         .limit(10)
@@ -89,16 +92,15 @@ def rating_distribution(db: Session = Depends(get_db)):
 # 6. Grievance Resolution Trend (line, monthly)
 @router.get("/grievance-trend")
 def grievance_trend(db: Session = Depends(get_db)):
-    rows = (
-        db.query(
-            func.to_char(Grievance.created_at, 'Mon').label("month"),
-            func.count(Grievance.id).label("filed"),
-            func.sum(func.cast(Grievance.status == "resolved", func.Integer())).label("resolved"),
-        )
-        .group_by("month")
-        .all()
-    )
-    return [{"month": m, "filed": f, "resolved": r or 0} for m, f, r in rows]
+    trend = {}
+    grievances = db.query(Grievance).order_by(Grievance.created_at).all()
+    for grievance in grievances:
+        month = grievance.created_at.strftime("%Y-%m")
+        summary = trend.setdefault(month, {"month": month, "filed": 0, "resolved": 0})
+        summary["filed"] += 1
+        if grievance.status == GrievanceStatus.RESOLVED:
+            summary["resolved"] += 1
+    return list(trend.values())
 
 
 # 7. Compliance Score (bar)

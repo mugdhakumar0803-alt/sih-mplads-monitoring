@@ -4,12 +4,18 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.pool import StaticPool
 from .config import settings
 
-# Create database engine with PostGIS support
-engine = create_engine(
-    settings.database_url,
-    pool_pre_ping=True,
-    echo=False,
-)
+engine_options = {
+    "pool_pre_ping": True,
+    "echo": False,
+}
+if settings.database_url.startswith("sqlite"):
+    engine_options.update({
+        "connect_args": {"check_same_thread": False},
+        "poolclass": StaticPool,
+    })
+
+# PostgreSQL remains the deployment database; SQLite is supported for local demos.
+engine = create_engine(settings.database_url, **engine_options)
 
 # Session factory
 SessionLocal = sessionmaker(

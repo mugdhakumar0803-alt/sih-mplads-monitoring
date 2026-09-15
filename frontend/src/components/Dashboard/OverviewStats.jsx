@@ -17,10 +17,11 @@ function StatCard({ icon, label, value, subtext, color }) {
 }
 
 function OverviewStats() {
-  const [stats, setStats] = useState({ total_works: 0, total_sanctioned: 0, completed: 0, active_anomalies: 0, status_breakdown: {} });
+  const [stats, setStats] = useState(null);
   useEffect(() => {
-    apiRequest("/works/dashboard/stats").then(setStats).catch(() => {});
+    apiRequest("/dashboard/summary").then(setStats).catch(() => {});
   }, []);
+  if (!stats) return <p className="text-sm text-gray-400">Loading dashboard data...</p>;
   const statusColors = {
     Completed: "bg-green-400",
     "In Progress": "bg-blue-400",
@@ -34,25 +35,25 @@ function OverviewStats() {
         <StatCard
           icon="💰"
           label="Total Sanctioned"
-          value={`₹${(stats.total_sanctioned / 10000000).toFixed(2)} Cr`}
-          subtext={`${stats.total_works} works`}
+          value={`₹${(stats.total_allocation / 10000000).toFixed(2)} Cr`}
+          subtext={`${stats.total_projects} works`}
         />
         <StatCard
           icon="📈"
           label="Funds Utilized"
-          value={`₹${(stats.totalSpent / 10000000).toFixed(2)} Cr`}
-          subtext={`${stats.utilizationPercent}% utilization`}
+          value={stats.utilization_percentage == null ? "Data unavailable" : `${stats.utilization_percentage}%`}
+          subtext={`${stats.expenditure_records}/${stats.total_projects} works with expenditure`}
           color="text-green-600"
         />
         <StatCard
           icon="✅"
           label="Works Completed"
-          value={`${stats.completed}/${stats.total_works}`}
+          value={`${stats.completed}/${stats.total_projects}`}
         />
         <StatCard
           icon="⚠️"
           label="Active Anomalies"
-          value={stats.active_anomalies}
+          value={stats.risk_breakdown.high}
           subtext="flagged works"
           color="text-red-600"
         />
@@ -64,19 +65,19 @@ function OverviewStats() {
           <p className="font-semibold text-navy text-sm">
             Work Status Summary
           </p>
-          <p className="text-xs text-gray-400">{stats.total_works} total works</p>
+          <p className="text-xs text-gray-400">{stats.total_projects} total works</p>
         </div>
         <div className="w-full h-3 rounded-full overflow-hidden flex mb-3">
-          {Object.entries(stats.status_breakdown).map(([status, count]) => (
+          {[["Sanctioned", stats.sanctioned], ["Ongoing", stats.in_progress], ["Completed", stats.completed]].map(([status, count]) => (
             <div
               key={status}
               className={statusColors[status]}
-              style={{ width: `${stats.total_works ? (count / stats.total_works) * 100 : 0}%` }}
+              style={{ width: `${stats.total_projects ? (count / stats.total_projects) * 100 : 0}%` }}
             ></div>
           ))}
         </div>
         <div className="flex gap-4 flex-wrap text-xs text-gray-500">
-          {Object.entries(stats.status_breakdown).map(([status, count]) => (
+          {[["Sanctioned", stats.sanctioned], ["Ongoing", stats.in_progress], ["Completed", stats.completed]].map(([status, count]) => (
             <span key={status} className="flex items-center gap-1">
               <span
                 className={`w-2 h-2 rounded-full inline-block ${statusColors[status]}`}

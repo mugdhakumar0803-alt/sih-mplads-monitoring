@@ -1,0 +1,81 @@
+# SIH26102 Implementation Audit
+
+Date: 2026-09-15
+
+## 1. Existing Working Features
+
+- FastAPI application with authentication, role checks, works, grievances, photos, fund release, compliance, chatbot, audit, ratings, and dashboard routers.
+- SQLAlchemy models for users, works, grievances, photos, fund releases, ratings, and audit logs.
+- EXIF GPS extraction, image hashing, distance calculation, and duplicate-photo rejection in `backend/app/routers/photos.py`.
+- Deterministic category validation and priority-area calculation in `backend/app/ml/compliance_engine.py`.
+- Risk score composition service in `backend/app/ml/risk_engine.py`.
+- CSV-backed training preprocessing in `backend/app/ml/training/seed_from_dataful.py`.
+- Existing frontend pages for citizen, MP, district, state, ministry, registration, work detail, and analytics.
+
+## 2. Partially Implemented Features
+
+- Registration now accepts privileged roles, but approval is intentionally pending until an administrator approves the account.
+- Work import exists as a focused importer, but source provenance, normalized locations, expenditure joins, and import reporting need a unified pipeline.
+- Grievance SLA calculation and escalation logic exist, but escalation history, scheduled execution, and complete UI workflow need completion.
+- Fund-release eligibility checks work against existing work/release records, but progress and expenditure data are limited by the current schema/source data.
+- Chatbot retrieves works and role-filters MP/state views, but needs richer grounded retrieval and project-detail context.
+- Leaderboard calculates a score from database values, but uses only MP accounts already in the database and needs explicit filters/breakdowns.
+
+## 3. Mock, Static, or Synthetic Logic
+
+- `backend/app/routers/analytics.py` had stale fields and static compliance output; it is being replaced with model-backed calculations.
+- `backend/app/ml/training/seed_from_dataful.py` generates synthetic photo/grievance features for model training. These must not be presented as government facts.
+- `backend/app/routers/analytics.py` compliance endpoint returns fixed demonstration scores and must be labeled or made data-driven.
+- Several frontend charts depend on analytics endpoints whose old implementation referenced nonexistent model fields.
+- Seed/demo scripts contain hardcoded users and works and must remain development-only, never the production data source.
+
+## 4. Broken or Stale Contracts
+
+- Dashboard status queries used lowercase strings that do not match `WorkStatus` enum values.
+- Analytics used fields such as `name`, `allocated_amount`, `physical_progress_pct`, and `utilized_amount` absent from `Work`.
+- Frontend analytics calls `/api/analytics`; a Vite proxy is required for local development.
+- Frontend role labels `district` and `state` differ from backend enum values and require boundary mapping.
+- Work serialization exposes enum objects instead of consistently serializing enum values.
+
+## 5. Missing Features
+
+- Unified repeatable CSV validation, normalization, deduplication, provenance, and import statistics pipeline.
+- Work fields for source dataset/record, district/block/village/ward, expenditure, sanction/completion dates, and implementing agency where available.
+- Database-backed dashboard distributions and trends with explicit empty/data-unavailable states.
+- Explainable risk endpoint and reusable cost, delay, and duplicate candidate services.
+- Grievance evidence upload, escalation history, scheduled SLA job, and admin/manual SLA endpoint.
+- Traceable compliance rule results, fund-release evidence gate, project audit timeline, and data-source UI.
+- Satellite provider abstraction with explicit unconfigured status.
+
+## 6. Dataset Files Found
+
+- `backend/app/ml/training/MPLADS.csv`
+- `backend/app/ml/training/MPLADS 2.csv`
+- `backend/app/ml/training/mplads_training_set.csv` when generated
+
+The primary MPLADS CSV is semicolon-delimited and contains fields including MP NAME, WORK, CATEGORY, STATE, CONSTITUENCY, CITY, WARD, BLOCK, VILLAGE, RECOMMENDED DATE, ALLOCATION AMOUNT, IDA APPROVAL, STATUS, and HOUSE. It does not provide uploaded photographs or reliable project GPS coordinates.
+
+## 7. Current Database Models
+
+- User, Work, Grievance, PhotoVerification, FundReleaseRecord, Rating, AuditLog, ReportSignature, RevokedToken.
+- Work currently stores work ID, MP name, title, category, state, constituency, location, optional latitude/longitude, status, allocation, dates, risk fields, and platform-generated evidence counters.
+- Expenditure, compliance-check, duplicate-cluster, notification, authority, and source-import models are not yet first-class models.
+
+## 8. Current API Routes
+
+- `/auth`, `/works`, `/photos`, `/grievances`, `/fund-release`, `/ai`, `/compliance`, `/chatbot`, `/dashboard`, `/ratings/leaderboard`, `/leaderboard`, `/api/analytics`, `/audit`, `/reports`, `/work-assignment`.
+- OpenAPI is generated by FastAPI.
+
+## 9. Current Frontend Pages
+
+- Landing, login, register, citizen, MP, district, state, ministry, analytics, and work detail.
+- Shared components include work registry, overview cards, charts, chatbot, compliance, grievance, fund release, photo verification, and escalation views.
+
+## 10. Integration Gaps and Implementation Order
+
+1. Add source/provenance fields and a unified importer with validation, cleaning, deduplication, upsert behavior, and statistics.
+2. Make dashboard APIs derive all KPIs and distributions from database records.
+3. Add project detail serialization, risk/cost/delay/duplicate endpoints, and honest unavailable states.
+4. Complete grievance SLA history and fund/compliance traceability.
+5. Add real leaderboard filters/breakdowns, audit timeline, grounded chatbot intents, satellite provider status, and methodology documentation.
+6. Add focused tests for ingestion, analytics, risk signals, photo verification, grievance escalation, compliance, fund gates, leaderboard, and permissions.

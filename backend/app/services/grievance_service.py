@@ -1,7 +1,7 @@
 # Business logic for citizen grievances
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 from ..models.grievance import Grievance, GrievanceStatus, GrievanceSeverity
 from ..models.user import User
 from ..services.sla_engine import compute_sla_status
@@ -48,6 +48,8 @@ class GrievanceService:
         starting_level, visibility = determine_filing_defaults(filer_role)
         grievance_data.setdefault("current_escalation_level", starting_level)
         grievance_data.setdefault("visibility", visibility)
+        grievance_data.setdefault("sla_deadline", datetime.utcnow() + timedelta(days=7))
+        grievance_data.setdefault("escalation_history", [])
         new_grievance = Grievance(**grievance_data)
         db.add(new_grievance)
         db.commit()
@@ -116,9 +118,13 @@ class GrievanceService:
         )
 
         if status.should_escalate_to:
+            previous_level = grievance.current_escalation_level or "district"
             grievance.current_escalation_level = status.should_escalate_to
             grievance.last_escalated_at = datetime.utcnow()
             grievance.is_escalated = True  # kept for backward compatibility with existing frontend code
+            history = list(grievance.escalation_history or [])
+            history.append({"previous_level": previous_level, "new_level": status.should_escalate_to, "timestamp": grievance.last_escalated_at.isoformat(), "reason": "Seven-day SLA breached"})
+            grievance.escalation_history = history
             grievance.updated_at = datetime.utcnow()
             db.commit()
             db.refresh(grievance)

@@ -6,8 +6,11 @@ import FundReleaseGate from "../components/FundRelease/FundReleaseGate";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 import ComplianceTracker from "../components/Compliance/ComplianceTracker";
 import EscalationTracker from "../components/Common/EscalationTracker";
+import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
+import { useAuth } from "../context/AuthContext";
 
 function MPDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
 
   const navItems = [
@@ -21,7 +24,7 @@ function MPDashboard() {
 
   return (
     <DashboardLayout
-      title="MP Dashboard"
+      title={`MP Dashboard${user?.constituency ? ` · ${user.constituency}` : ""}`}
       navItems={navItems.map((n) => ({
         ...n,
         onClick: () => setActiveTab(n.label),
@@ -34,6 +37,7 @@ function MPDashboard() {
       {activeTab === "Grievances & SLA" && <GrievancePanel />}
       {activeTab === "Escalation" && <EscalationTracker />}
       {activeTab === "Compliance" && <ComplianceTracker />}
+      <div className="mt-6"><ChatbotWidget /></div>
     </DashboardLayout>
   );
 }

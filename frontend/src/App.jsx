@@ -11,7 +11,6 @@ import DistrictDashboard from "./pages/DistrictDashboard";
 import StateDashboard from "./pages/StateDashboard";
 import MinistryDashboard from "./pages/MinistryDashboard";
 import WorkDetail from "./pages/WorkDetail";
-import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 
 function App() {
   return (

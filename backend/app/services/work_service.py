@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime
 from ..models.work import Work, WorkStatus
+from ..models.user import User, UserRole
 from ..ml.anomaly import score_works, WorkFeatures
 from ..ml.risk_engine import RiskEngine
 from ..ml.duplicates import find_duplicate_clusters, WorkInput
@@ -28,6 +29,7 @@ class WorkService:
         db: Session,
         state: Optional[str] = None,
         status: Optional[WorkStatus] = None,
+        current_user: Optional[User] = None,
         skip: int = 0,
         limit: int = 100,
     ) -> List[Work]:
@@ -37,6 +39,15 @@ class WorkService:
             query = query.filter(Work.state == state)
         if status:
             query = query.filter(Work.status == status)
+        if current_user and current_user.role == UserRole.MP:
+            if current_user.constituency:
+                query = query.filter(Work.constituency == current_user.constituency)
+            else:
+                query = query.filter(Work.mp_name == current_user.username)
+        elif current_user and current_user.role == UserRole.STATE_OFFICIAL and current_user.state:
+            query = query.filter(Work.state == current_user.state)
+        elif current_user and current_user.role == UserRole.DISTRICT_OFFICIAL and current_user.district_id:
+            query = query.filter(Work.district == current_user.district_id)
         return query.offset(skip).limit(limit).all()
 
     @staticmethod

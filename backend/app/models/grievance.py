@@ -56,6 +56,8 @@ class Grievance(Base):
 
     current_escalation_level = Column(String(20), default="district")
     last_escalated_at = Column(DateTime, nullable=True)
+    sla_deadline = Column(DateTime, nullable=True)
+    escalation_history = Column(JSON, default=list)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

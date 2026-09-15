@@ -4,6 +4,7 @@ import DashboardLayout from "../components/Common/DashboardLayout";
 import OverviewStats from "../components/Dashboard/OverviewStats";
 import EscalationTracker from "../components/Common/EscalationTracker";
 import ComplianceTracker from "../components/Compliance/ComplianceTracker";
+import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
 
 function StateDashboard() {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ function StateDashboard() {
       )}
       {activeTab === "Escalations" && <EscalationTracker />}
       {activeTab === "Compliance" && <ComplianceTracker />}
+      <div className="mt-6"><ChatbotWidget /></div>
     </DashboardLayout>
   );
 }

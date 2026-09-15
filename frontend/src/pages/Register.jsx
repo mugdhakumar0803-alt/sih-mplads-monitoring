@@ -16,6 +16,10 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [state, setState] = useState("");
+  const [district, setDistrict] = useState("");
+  const [constituency, setConstituency] = useState("");
+  const [house, setHouse] = useState("lok_sabha");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { register } = useAuth();
@@ -23,13 +27,30 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !email || !password) return;
+    if (!name || !email || !password) {
+      setError("Enter your name, email, and password.");
+      return;
+    }
     setError("");
     setSubmitting(true);
     try {
-      await register(selectedRole, name, email, password);
+      const backendRole = selectedRole === "district" ? "district_official" : selectedRole === "state" ? "state_official" : selectedRole;
+      const registration = await register({
+        username: email,
+        email,
+        password,
+        role: backendRole,
+        state: state || undefined,
+        district_id: district || undefined,
+        constituency: constituency || undefined,
+        house: selectedRole === "mp" ? house : undefined,
+      });
       const role = roles.find((r) => r.id === selectedRole);
-      navigate(role.path);
+      if (registration.approval_status === "pending") {
+        setError("Account created and awaiting administrator approval. Use the approval utility for a local demo account, then log in.");
+      } else {
+        navigate(role.path);
+      }
     } catch (err) {
       setError(err.message || "Registration failed — please try again.");
     } finally {
@@ -83,6 +104,39 @@ function Register() {
               onChange={(e) => setName(e.target.value)}
               className="border border-gray-300 rounded px-3 py-2 text-sm"
             />
+            {(selectedRole === "mp" || selectedRole === "district" || selectedRole === "state" || selectedRole === "citizen") && (
+              <input
+                type="text"
+                placeholder="State"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+            )}
+            {selectedRole === "district" && (
+              <input
+                type="text"
+                placeholder="District"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+            )}
+            {selectedRole === "mp" && (
+              <>
+                <select value={house} onChange={(e) => setHouse(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm">
+                  <option value="lok_sabha">Lok Sabha</option>
+                  <option value="rajya_sabha">Rajya Sabha</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Constituency"
+                  value={constituency}
+                  onChange={(e) => setConstituency(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-2 text-sm"
+                />
+              </>
+            )}
             <input
               type="email"
               placeholder="Email"
