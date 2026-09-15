@@ -12,6 +12,8 @@ scheduled job if your team sets one up) — it's a pure function, no
 side effects except returning what the grievance's state SHOULD be,
 so grievance_service.py stays in charge of actually saving it.
 """
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 

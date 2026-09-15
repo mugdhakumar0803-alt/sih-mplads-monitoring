@@ -14,6 +14,8 @@ Two-step approach:
      anything the keywords miss — compares the WORK text against a short
      description of each category and picks the closest match.
 """
+from __future__ import annotations
+
 from sentence_transformers import SentenceTransformer, util
 
 _model = SentenceTransformer("all-MiniLM-L6-v2")  # same model used everywhere else in ml/

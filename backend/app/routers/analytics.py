@@ -12,14 +12,9 @@ would raise an AttributeError the moment real data existed, and
 """
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case
-
-from ..database import get_db
-from ..models.work import Work, WorkStatus
-from ..models.grievance import Grievance, GrievanceStatus
-from ..models.rating import Rating
-from ..models.fund_release import FundReleaseRecord, ReleaseStatus
-from ..ml.compliance_engine import compute_priority_area_percent, PRIORITY_AREA_REQUIRED_PERCENT
+from sqlalchemy import func
+from database import get_db          # adjust import to your actual db session
+from models import Work, Grievance, CitizenFeedback  # adjust to your actual models
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
@@ -127,12 +122,11 @@ def citizen_verification(db: Session = Depends(get_db)):
 @router.get("/rating-distribution")
 def rating_distribution(db: Session = Depends(get_db)):
     rows = (
-        db.query(func.round(Rating.overall_score).label("stars"), func.count(Rating.id))
-        .group_by("stars")
-        .order_by("stars")
+        db.query(CitizenFeedback.rating, func.count(CitizenFeedback.id))
+        .group_by(CitizenFeedback.rating)
         .all()
     )
-    return [{"stars": int(stars), "count": count} for stars, count in rows]
+    return [{"stars": r, "count": c} for r, c in rows]
 
 
 # 6. Grievance Resolution Trend (monthly)
@@ -140,7 +134,7 @@ def rating_distribution(db: Session = Depends(get_db)):
 def grievance_trend(db: Session = Depends(get_db)):
     rows = (
         db.query(
-            func.to_char(Grievance.created_at, "Mon").label("month"),
+            func.to_char(Grievance.filed_on, 'Mon').label("month"),
             func.count(Grievance.id).label("filed"),
             func.sum(case((Grievance.status == GrievanceStatus.RESOLVED, 1), else_=0)).label("resolved"),
         )

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Owner: AI/ML or Cybersecurity (this is deterministic rule logic, not
 machine learning — no model, no training, just checking real numbers

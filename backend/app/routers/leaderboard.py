@@ -6,6 +6,7 @@ Public accountability leaderboard, split by house since Lok Sabha and
 Rajya Sabha MPs have different mandates and shouldn't be ranked against
 each other in one mixed list.
 """
+from __future__ import annotations
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func

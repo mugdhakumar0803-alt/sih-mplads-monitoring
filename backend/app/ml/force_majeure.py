@@ -16,6 +16,8 @@ work site was directly affected." That's a reasonable approximation for
 a prototype, not a precise geographic match — say this plainly if asked,
 same as the SC/ST data gap.
 """
+from __future__ import annotations
+
 import pandas as pd
 from dataclasses import dataclass
 from datetime import datetime, timedelta

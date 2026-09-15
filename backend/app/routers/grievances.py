@@ -38,7 +38,12 @@ async def list_grievances(
             raise HTTPException(status_code=400, detail="Invalid status")
     
     grievances = GrievanceService.get_all_grievances(
-        db, work_id=work_id, status=grievance_status, skip=skip, limit=limit
+        db,
+        current_user=current_user,
+        work_id=work_id,
+        status=grievance_status,
+        skip=skip,
+        limit=limit,
     )
 
     write_audit(db, current_user, "GRIEVANCES_LIST_VIEWED", request, resource_type="grievance")
