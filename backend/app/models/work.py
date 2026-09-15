@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSON
 from datetime import datetime
 import uuid
 import enum
+from sqlalchemy import Float
 
 from ..database import Base
 

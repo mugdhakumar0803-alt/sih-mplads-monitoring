@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
+
+from pydantic import BaseModel, EmailStr, Field
 
 
 class TokenData(BaseModel):
@@ -8,6 +9,7 @@ class TokenData(BaseModel):
     constituency_id: Optional[str] = None
     district_id: Optional[str] = None
     state_id: Optional[str] = None
+    jti: str
 
 
 class Token(BaseModel):
@@ -23,10 +25,20 @@ class UserLogin(BaseModel):
 
 
 class UserRegister(BaseModel):
-    username: str = Field(min_length=3, max_length=255)
+    username: str = Field(
+        min_length=3,
+        max_length=255,
+    )
+
     email: EmailStr
-    password: str = Field(min_length=8)
+
+    password: str = Field(
+        min_length=8,
+        max_length=128,
+    )
+
     role: str = "citizen"
+
     constituency_id: Optional[str] = None
     district_id: Optional[str] = None
     state_id: Optional[str] = None
