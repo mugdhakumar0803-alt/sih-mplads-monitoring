@@ -1,6 +1,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
+from routers import analytics
+
 from app.database import Base, engine, init_db
 from app.models.user import User
 from app.models.work import Work
@@ -44,6 +46,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(analytics.router)
 app.include_router(auth_router)
 app.include_router(works_router)
 app.include_router(grievances_router)
