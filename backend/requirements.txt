@@ -19,6 +19,7 @@ pandas
 
 sentence-transformers
 torch
+Pillow
 
 cryptography
 
