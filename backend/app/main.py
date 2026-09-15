@@ -65,3 +65,7 @@ def health_check():
 from app.routers.dashboard import router as dashboard_router
 ...
 app.include_router(dashboard_router)
+from app.routers.work_assignment import router as work_assignment_router
+from app.routers.leaderboard import router as leaderboard_router
+app.include_router(work_assignment_router)
+app.include_router(leaderboard_router)
