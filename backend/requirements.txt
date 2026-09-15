@@ -24,3 +24,5 @@ cryptography
 
 pytest
 httpx
+
+email-validator

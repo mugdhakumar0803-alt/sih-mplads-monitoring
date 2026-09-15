@@ -1,29 +1,32 @@
-# Pydantic schemas for auth
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-from ..models.user import UserRole
 
 
 class TokenData(BaseModel):
-    """JWT token data."""
     user_id: str
+    role: Optional[str] = None
+    constituency_id: Optional[str] = None
+    district_id: Optional[str] = None
+    state_id: Optional[str] = None
 
 
 class Token(BaseModel):
-    """Token response."""
     access_token: str
-    token_type: str
+    token_type: str = "bearer"
+    expires_in: int
+    user: Optional[dict] = None
 
 
 class UserLogin(BaseModel):
-    """User login request."""
     username: str
-    password: str
+    password: str = Field(min_length=8)
 
 
 class UserRegister(BaseModel):
-    """User registration request."""
-    username: str
-    email: str
-    password: str
-    role: UserRole = UserRole.CITIZEN
+    username: str = Field(min_length=3, max_length=255)
+    email: EmailStr
+    password: str = Field(min_length=8)
+    role: str = "citizen"
+    constituency_id: Optional[str] = None
+    district_id: Optional[str] = None
+    state_id: Optional[str] = None
