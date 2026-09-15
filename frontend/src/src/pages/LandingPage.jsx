@@ -6,39 +6,25 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-white text-gray-800">
 
-      {/* ================= TOP BAR ================= */}
-      <div className="bg-[#f5f7fa] border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-2 flex justify-between items-center text-xs text-gray-600">
-          <p>Government of India</p>
-          <div className="hidden sm:flex items-center gap-5">
-            <span>भारत सरकार</span>
-            <span className="cursor-pointer hover:text-navy">Accessibility</span>
-            <span className="cursor-pointer hover:text-navy font-semibold">A-</span>
-            <span className="cursor-pointer hover:text-navy font-semibold">A</span>
-            <span className="cursor-pointer hover:text-navy font-semibold">A+</span>
-          </div>
-        </div>
-      </div>
-
       {/* ================= HEADER ================= */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md bg-white/90">
+        <div className="max-w-7xl mx-auto px-5 md:px-8 py-3.5 flex items-center justify-between">
 
           {/* Logo + Branding */}
           <div className="flex items-center gap-4">
             <img
               src={panchsetuLogo}
               alt="PANCHSETU Logo"
-              className="w-16 h-16 md:w-20 md:h-20 object-contain"
+              className="w-14 h-14 md:w-16 md:h-16 object-contain"
             />
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-wide text-navy">
+              <h1 className="text-xl md:text-2xl font-extrabold tracking-wide text-navy">
                 PANCHSETU
               </h1>
-              <p className="text-xs md:text-sm text-gray-600 mt-1">
+              <p className="text-xs text-gray-600 font-medium">
                 MPLADS Monitoring & Accountability Platform
               </p>
-              <p className="text-[11px] md:text-xs text-gray-500 mt-1">
+              <p className="text-[11px] text-gray-400">
                 Ministry of Statistics & Programme Implementation
               </p>
             </div>
@@ -48,13 +34,13 @@ const LandingPage = () => {
           <div className="hidden md:flex items-center gap-4">
             <Link
               to="/register"
-              className="text-navy font-semibold text-sm hover:underline"
+              className="text-navy font-semibold text-sm hover:text-accent transition"
             >
               Register
             </Link>
             <Link
               to="/login"
-              className="flex items-center gap-2 bg-navy text-white px-6 py-3 rounded-md font-semibold hover:opacity-90 transition shadow-sm"
+              className="flex items-center gap-2 bg-navy text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-navy/90 transition shadow-sm"
             >
               Login
               <span>→</span>
@@ -63,17 +49,17 @@ const LandingPage = () => {
         </div>
 
         {/* ================= NAVIGATION ================= */}
-        <div className="bg-navy">
+        <div className="bg-navy shadow-inner">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <div className="flex items-center gap-8 py-3 text-sm font-medium overflow-x-auto">
-              <a href="#home" className="text-white hover:text-accent transition whitespace-nowrap">Home</a>
-              <a href="#about" className="text-white hover:text-accent transition whitespace-nowrap">About</a>
-              <a href="#features" className="text-white hover:text-accent transition whitespace-nowrap">Features</a>
-              <a href="#workflow" className="text-white hover:text-accent transition whitespace-nowrap">How It Works</a>
-              <a href="#stakeholders" className="text-white hover:text-accent transition whitespace-nowrap">Stakeholders</a>
+            <div className="flex items-center gap-8 py-2.5 text-sm font-medium overflow-x-auto">
+              <a href="#home" className="text-white/90 hover:text-white transition whitespace-nowrap">Home</a>
+              <a href="#about" className="text-white/90 hover:text-white transition whitespace-nowrap">About</a>
+              <a href="#features" className="text-white/90 hover:text-white transition whitespace-nowrap">Features</a>
+              <a href="#workflow" className="text-white/90 hover:text-white transition whitespace-nowrap">How It Works</a>
+              <a href="#stakeholders" className="text-white/90 hover:text-white transition whitespace-nowrap">Stakeholders</a>
               <Link
                 to="/login"
-                className="ml-auto bg-accent text-white px-5 py-2 rounded-md font-semibold hover:opacity-90 transition whitespace-nowrap"
+                className="ml-auto bg-accent text-white px-4 py-1.5 rounded-md text-xs font-semibold hover:opacity-90 transition whitespace-nowrap"
               >
                 Enter Portal
               </Link>
@@ -87,104 +73,107 @@ const LandingPage = () => {
         id="home"
         className="relative overflow-hidden bg-gradient-to-br from-[#f5f8fc] via-white to-[#eef4fa]"
       >
-        <div className="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-navy/5"></div>
-        <div className="absolute -left-32 bottom-0 w-80 h-80 rounded-full bg-accent/5"></div>
+        <div className="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-navy/5 blur-xl"></div>
+        <div className="absolute -left-32 bottom-0 w-80 h-80 rounded-full bg-accent/5 blur-xl"></div>
 
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-24">
-          <div className="grid lg:grid-cols-2 gap-14 items-start">
+        <div className="relative max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
 
             {/* LEFT CONTENT */}
             <div>
-              <div className="inline-flex items-center gap-2 bg-[#e8eef6] text-navy px-4 py-2 rounded-full text-sm font-semibold mb-6">
-                <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+              <div className="inline-flex items-center gap-2 bg-[#e8eef6] text-navy px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                 Intelligent Governance Platform
               </div>
 
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] text-navy">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-navy tracking-tight">
                 Smarter Monitoring.
                 <br />
                 <span className="text-[#28598c]">Stronger Accountability.</span>
               </h2>
 
-              <p className="mt-7 text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl">
+              <p className="mt-6 text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
                 PANCHSETU brings AI-powered analytics, project monitoring,
-                citizen participation and risk-based alerts together to
+                citizen participation, and risk-based alerts together to
                 strengthen transparency in MPLADS implementation.
               </p>
 
-              <div className="mt-9 flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-3 bg-navy text-white px-7 py-3.5 rounded-md font-semibold hover:opacity-90 transition shadow-lg"
+                  className="inline-flex items-center gap-2 bg-navy text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy/90 transition shadow-md hover:shadow-lg"
                 >
                   Access PANCHSETU
                   <span>→</span>
                 </Link>
                 <a
                   href="#about"
-                  className="inline-flex items-center gap-2 border border-navy text-navy px-7 py-3.5 rounded-md font-semibold hover:bg-navy hover:text-white transition"
+                  className="inline-flex items-center gap-2 border border-navy/30 text-navy px-6 py-3 rounded-lg font-semibold hover:bg-navy hover:text-white transition"
                 >
                   Explore Platform
                 </a>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-6 text-sm text-gray-500">
-                <span>✓ AI-Powered Analytics</span>
-                <span>✓ Risk-Based Monitoring</span>
-                <span>✓ Citizen Transparency</span>
+              <div className="mt-8 flex flex-wrap gap-6 text-xs md:text-sm font-medium text-gray-500">
+                <span className="flex items-center gap-1.5"><strong className="text-green-600">✓</strong> AI Analytics</span>
+                <span className="flex items-center gap-1.5"><strong className="text-green-600">✓</strong> Risk Alerts</span>
+                <span className="flex items-center gap-1.5"><strong className="text-green-600">✓</strong> Citizen Transparency</span>
               </div>
             </div>
 
-            {/* RIGHT VISUAL */}
-            <div className="relative pb-10">
+            {/* RIGHT VISUAL - CLEAN EMBEDDED UI */}
+            <div>
               <div className="bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
-                <div className="bg-navy px-6 py-5 text-white">
+                <div className="bg-navy px-6 py-4 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-blue-200 uppercase tracking-wider">
+                      <p className="text-[11px] text-blue-200 font-semibold uppercase tracking-wider">
                         Monitoring Overview
                       </p>
-                      <h3 className="text-xl font-bold mt-1">MPLADS Insights</h3>
+                      <h3 className="text-lg font-bold mt-0.5">MPLADS Insights</h3>
                     </div>
-                    <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-                      <img src={panchsetuLogo} alt="" className="w-9 h-9 object-contain" />
+                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                      <img src={panchsetuLogo} alt="" className="w-7 h-7 object-contain" />
                     </div>
                   </div>
                 </div>
 
                 <div className="p-6">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3.5">
                     <StatCard number="01" title="Anomaly Detection" description="Identify unusual patterns" />
                     <StatCard number="02" title="Project Tracking" description="Monitor execution progress" />
                     <StatCard number="03" title="Citizen Feedback" description="Ground-level verification" />
                     <StatCard number="04" title="Risk Alerts" description="Prioritize critical cases" />
                   </div>
 
-                  <div className="mt-5 border border-gray-200 rounded-xl p-5">
-                    <div className="flex justify-between items-center mb-4">
+                  {/* Embedded Flow Banner (Replaced Overlapping Floating Badge) */}
+                  <div className="mt-4 border border-gray-200 rounded-xl p-4 bg-gray-50/50">
+                    <div className="flex justify-between items-center mb-3">
                       <div>
-                        <p className="text-xs text-gray-500">Accountability Flow</p>
-                        <p className="font-semibold text-navy">Monitor → Verify → Act</p>
+                        <p className="text-[11px] text-gray-500 font-semibold uppercase">Accountability Flow</p>
+                        <p className="font-bold text-navy text-sm">Monitor → Verify → Act</p>
                       </div>
-                      <span className="text-green-600 font-semibold text-sm">Active</span>
+                      <span className="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2.5 py-1 rounded-full text-xs font-semibold border border-green-200">
+                        <span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span>
+                        Active
+                      </span>
                     </div>
+
                     <div className="flex items-center gap-2">
                       <div className="h-2 flex-1 bg-navy rounded-full"></div>
                       <div className="h-2 flex-1 bg-[#28598c] rounded-full"></div>
                       <div className="h-2 flex-1 bg-accent rounded-full"></div>
                     </div>
+
+                    <div className="mt-3 pt-3 border-t border-gray-200/60 flex items-center justify-between text-xs text-gray-600">
+                      <span className="font-medium text-gray-500">Governance Model</span>
+                      <span className="font-bold text-navy">Data → Insight → Action</span>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Floating badge */}
-              <div className="absolute -bottom-2 left-6 bg-white border border-gray-200 shadow-lg rounded-xl px-5 py-3 max-w-[240px] z-10">
-                <p className="text-xs text-gray-500">Governance</p>
-                <p className="font-bold text-navy text-sm md:text-base whitespace-nowrap">
-                  Data → Insight → Action
-                </p>
-              </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -193,22 +182,22 @@ const LandingPage = () => {
       <section id="about" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-5 md:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <p className="text-sm font-bold tracking-widest uppercase text-accent">
+            <p className="text-xs font-bold tracking-widest uppercase text-accent">
               About PANCHSETU
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-2">
               Bridging Data, Governance & Citizens
             </h2>
-            <div className="w-16 h-1 bg-accent mx-auto mt-5"></div>
-            <p className="mt-7 text-gray-600 text-lg leading-relaxed">
+            <div className="w-12 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+            <p className="mt-6 text-gray-600 text-base md:text-lg leading-relaxed">
               PANCHSETU acts as an intelligent monitoring layer for
               MPLADS implementation, transforming project and financial
-              data into actionable insights, risk alerts and accountability
+              data into actionable insights, risk alerts, and accountability
               signals.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-5 gap-4 mt-14">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-12">
             <Pillar number="01" title="Detect" />
             <Pillar number="02" title="Verify" />
             <Pillar number="03" title="Predict" />
@@ -221,11 +210,11 @@ const LandingPage = () => {
       {/* ================= FEATURES ================= */}
       <section id="features" className="py-20 bg-[#f7f9fc]">
         <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="mb-12">
-            <p className="text-sm font-bold tracking-widest uppercase text-accent">
+          <div className="mb-12 text-center md:text-left">
+            <p className="text-xs font-bold tracking-widest uppercase text-accent">
               Platform Capabilities
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-2">
               One Platform. Multiple Layers of Accountability.
             </h2>
           </div>
@@ -244,16 +233,16 @@ const LandingPage = () => {
       {/* ================= WORKFLOW ================= */}
       <section id="workflow" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-5 md:px-8">
-          <div className="text-center mb-14">
-            <p className="text-sm font-bold tracking-widest uppercase text-accent">
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold tracking-widest uppercase text-accent">
               Accountability Loop
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-2">
               From Detection to Action
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
             <WorkflowStep number="01" title="Project Data" />
             <WorkflowStep number="02" title="AI Analysis" />
             <WorkflowStep number="03" title="Risk Detection" />
@@ -263,7 +252,7 @@ const LandingPage = () => {
           </div>
 
           <div className="mt-10 text-center">
-            <p className="text-gray-600 max-w-3xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
               PANCHSETU doesn't just identify a problem. It tracks what
               happens after the problem is identified.
             </p>
@@ -275,15 +264,15 @@ const LandingPage = () => {
       <section id="stakeholders" className="py-20 bg-[#f7f9fc]">
         <div className="max-w-7xl mx-auto px-5 md:px-8">
           <div className="text-center mb-12">
-            <p className="text-sm font-bold tracking-widest uppercase text-accent">
+            <p className="text-xs font-bold tracking-widest uppercase text-accent">
               Unified Governance
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-2">
               Designed for Every Stakeholder
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-5">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-5">
             <Stakeholder title="Member of Parliament" text="Constituency-level project monitoring, risks and fund utilization." />
             <Stakeholder title="District Authority" text="Detailed execution monitoring, grievances and corrective action." />
             <Stakeholder title="State Authority" text="State-level trends, escalations and performance monitoring." />
@@ -296,16 +285,16 @@ const LandingPage = () => {
       <section className="relative overflow-hidden bg-navy text-white">
         <div className="absolute right-0 top-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
 
-        <div className="relative max-w-5xl mx-auto px-5 py-20 text-center">
+        <div className="relative max-w-4xl mx-auto px-5 py-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">
             Building a More Transparent MPLADS Ecosystem
           </h2>
-          <p className="mt-5 text-blue-100 text-lg">
+          <p className="mt-4 text-blue-100 text-base md:text-lg">
             Data-driven insights. Early warnings. Stronger accountability.
           </p>
           <Link
             to="/login"
-            className="inline-flex items-center gap-3 mt-8 bg-accent text-white px-8 py-3.5 rounded-md font-bold hover:opacity-90 transition shadow-lg"
+            className="inline-flex items-center gap-3 mt-8 bg-accent text-white px-8 py-3.5 rounded-lg font-bold hover:opacity-90 transition shadow-lg"
           >
             Enter PANCHSETU Portal
             <span>→</span>
@@ -318,26 +307,26 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-5 md:px-8 py-10">
           <div className="flex flex-col md:flex-row justify-between gap-8">
             <div className="flex gap-4 items-start">
-              <img src={panchsetuLogo} alt="PANCHSETU" className="w-14 h-14 object-contain" />
+              <img src={panchsetuLogo} alt="PANCHSETU" className="w-12 h-12 object-contain" />
               <div>
-                <h3 className="text-white font-bold text-xl">PANCHSETU</h3>
-                <p className="text-sm mt-2 max-w-md">
+                <h3 className="text-white font-bold text-lg">PANCHSETU</h3>
+                <p className="text-xs text-gray-400 mt-1 max-w-md">
                   AI-Powered MPLADS Monitoring & Accountability Platform
                 </p>
               </div>
             </div>
 
-            <div className="text-sm md:text-right">
-              <p className="text-gray-400">
+            <div className="text-xs md:text-right">
+              <p className="text-gray-300 font-medium">
                 Ministry of Statistics & Programme Implementation
               </p>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-1 text-gray-400">
                 Technology solution for intelligent monitoring and analytics.
               </p>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-5 text-xs text-gray-500 text-center">
+          <div className="border-t border-gray-800 mt-8 pt-5 text-xs text-gray-500 text-center">
             © 2026 PANCHSETU • Prototype Platform
           </div>
         </div>
@@ -347,50 +336,48 @@ const LandingPage = () => {
 };
 
 /* ========================================================= */
-/* COMPONENTS */
+/* HELPER COMPONENTS */
 /* ========================================================= */
 
 const StatCard = ({ number, title, description }) => (
-  <div className="border border-gray-200 rounded-xl p-4 hover:border-navy/30 transition">
-    <div className="text-xs font-bold text-accent">{number}</div>
-    <h4 className="font-bold text-navy mt-2 text-sm">{title}</h4>
-    <p className="text-xs text-gray-500 mt-1">{description}</p>
+  <div className="border border-gray-200 bg-white rounded-xl p-3.5 hover:border-navy/40 transition hover:shadow-sm">
+    <div className="text-[11px] font-bold text-accent">{number}</div>
+    <h4 className="font-bold text-navy mt-1 text-xs md:text-sm">{title}</h4>
+    <p className="text-[11px] text-gray-500 mt-0.5 leading-tight">{description}</p>
   </div>
 );
 
 const Pillar = ({ number, title }) => (
-  <div className="border border-gray-200 bg-white p-5 text-center rounded-lg hover:shadow-md transition">
+  <div className="border border-gray-200 bg-white p-4 text-center rounded-xl hover:shadow-md hover:border-navy/20 transition">
     <div className="text-xs font-bold text-accent">{number}</div>
-    <h3 className="font-bold text-navy mt-2">{title}</h3>
+    <h3 className="font-bold text-navy mt-1.5 text-sm">{title}</h3>
   </div>
 );
 
 const FeatureCard = ({ icon, title, text }) => (
-  <div className="bg-white border border-gray-200 rounded-xl p-7 hover:shadow-lg hover:-translate-y-1 transition duration-300">
-    <div className="w-11 h-11 rounded-lg bg-[#e8eef6] text-navy flex items-center justify-center text-xl font-bold">
+  <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition duration-200">
+    <div className="w-10 h-10 rounded-lg bg-[#e8eef6] text-navy flex items-center justify-center text-lg font-bold">
       {icon}
     </div>
-    <h3 className="text-lg font-bold text-navy mt-5">{title}</h3>
-    <p className="text-sm text-gray-600 mt-3 leading-relaxed">{text}</p>
+    <h3 className="text-base font-bold text-navy mt-4">{title}</h3>
+    <p className="text-xs md:text-sm text-gray-600 mt-2 leading-relaxed">{text}</p>
   </div>
 );
 
 const WorkflowStep = ({ number, title }) => (
-  <div className="relative">
-    <div className="bg-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-md transition">
-      <div className="text-xs font-bold text-accent">STEP {number}</div>
-      <h3 className="font-bold text-navy mt-2">{title}</h3>
-    </div>
+  <div className="bg-white border border-gray-200 rounded-xl p-4 text-center hover:shadow-md transition">
+    <div className="text-[11px] font-bold text-accent">STEP {number}</div>
+    <h3 className="font-bold text-navy mt-1.5 text-xs md:text-sm">{title}</h3>
   </div>
 );
 
 const Stakeholder = ({ title, text }) => (
-  <div className="bg-white border border-gray-200 rounded-xl p-7 text-center hover:shadow-lg transition">
-    <div className="w-12 h-12 mx-auto rounded-full bg-[#e8eef6] flex items-center justify-center text-navy font-bold">
+  <div className="bg-white border border-gray-200 rounded-xl p-6 text-center hover:shadow-md transition">
+    <div className="w-10 h-10 mx-auto rounded-full bg-[#e8eef6] flex items-center justify-center text-navy font-bold text-sm">
       ✓
     </div>
-    <h3 className="font-bold text-navy mt-5">{title}</h3>
-    <p className="text-sm text-gray-600 mt-3 leading-relaxed">{text}</p>
+    <h3 className="font-bold text-navy mt-4 text-sm md:text-base">{title}</h3>
+    <p className="text-xs md:text-sm text-gray-600 mt-2 leading-relaxed">{text}</p>
   </div>
 );
 
