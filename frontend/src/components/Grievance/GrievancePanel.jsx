@@ -1,35 +1,36 @@
-import { useState } from "react";
-import { mockGrievances, escalationLabels } from "../../utils/mockData";
-import { getSLAStatus } from "../../utils/slaHelper";
+import { useEffect, useState } from "react";
+import { fileGrievance, getGrievances } from "../../api/client";
+
+const escalationLabels = { district: "District Authority", state: "State Authority", mp: "Member of Parliament", ministry: "Ministry" };
 
 function GrievancePanel({ presetWorkId, presetWorkTitle }) {
-  const [grievances, setGrievances] = useState(mockGrievances);
+  const [grievances, setGrievances] = useState([]);
   const [showForm, setShowForm] = useState(!!presetWorkId);
   const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    getGrievances(presetWorkId).then((result) => setGrievances(result.grievances)).catch((requestError) => setError(requestError.message));
+  }, [presetWorkId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!description.trim()) return;
 
-    const newGrievance = {
-      id: `GRV-${Math.floor(Math.random() * 9000) + 1000}`,
-      workId: presetWorkId || "W-2024-005",
-      workTitle: presetWorkTitle || "School Building Renovation",
-      description,
-      filedBy: "You",
-      filedAt: new Date().toISOString(),
-      slaDeadlineDays: 7,
-      escalationLevel: "district",
-      status: "open",
-    };
-
-    setGrievances([newGrievance, ...grievances]);
-    setDescription("");
-    setShowForm(!presetWorkId);
+    setError("");
+    try {
+      await fileGrievance({ work_id: presetWorkId || null, citizen_name: "Authenticated citizen", description, severity: "medium" });
+      const result = await getGrievances(presetWorkId);
+      setGrievances(result.grievances);
+      setDescription("");
+      setShowForm(!presetWorkId);
+    } catch (submitError) {
+      setError(submitError.message);
+    }
   };
 
   const relevantGrievances = presetWorkId
-    ? grievances.filter((g) => g.workId === presetWorkId)
+    ? grievances.filter((g) => g.work_id === presetWorkId)
     : grievances;
 
   return (
@@ -47,12 +48,14 @@ function GrievancePanel({ presetWorkId, presetWorkTitle }) {
           </button>
         )}
       </div>
+      {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
 
       {showForm && (
         <form
           onSubmit={handleSubmit}
           className="bg-white border border-gray-200 rounded-lg p-4 mb-6"
         >
+          {presetWorkTitle && <p className="text-sm text-navy mb-3">Work: {presetWorkTitle}</p>}
           <label className="text-xs text-gray-500 block mb-1">
             Describe the issue with this work
           </label>
@@ -79,7 +82,6 @@ function GrievancePanel({ presetWorkId, presetWorkTitle }) {
           </p>
         )}
         {relevantGrievances.map((g) => {
-          const sla = getSLAStatus(g.filedAt, g.slaDeadlineDays);
           return (
             <div
               key={g.id}
@@ -88,33 +90,26 @@ function GrievancePanel({ presetWorkId, presetWorkTitle }) {
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <p className="font-semibold text-navy text-sm">
-                    {g.workTitle}
+                    {g.work_id || "General grievance"}
                   </p>
                   <p className="text-xs text-gray-400">
-                    {g.id} · Filed by {g.filedBy}
+                    {g.grievance_id} · Filed by {g.citizen_name}
                   </p>
                 </div>
                 <span
                   className={`text-xs font-semibold px-2 py-1 rounded ${
-                    sla.isOverdue
-                      ? "bg-red-100 text-red-700"
-                      : "bg-yellow-100 text-yellow-700"
+                    g.status === "resolved" || g.status === "closed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
                   }`}
                 >
-                  {sla.label}
+                  {g.status}
                 </span>
               </div>
               <p className="text-sm text-gray-600 mb-2">{g.description}</p>
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-gray-400">Escalation Level:</span>
                 <span className="font-medium text-navy">
-                  {escalationLabels[g.escalationLevel]}
+                  {escalationLabels.district}
                 </span>
-                {sla.isOverdue && (
-                  <span className="text-red-500 font-medium">
-                    ⚠ SLA breached — auto-escalated
-                  </span>
-                )}
               </div>
             </div>
           );

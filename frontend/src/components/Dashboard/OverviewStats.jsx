@@ -1,4 +1,5 @@
-import { getDashboardStats } from "../../utils/mockData";
+import { useEffect, useState } from "react";
+import { apiRequest } from "../../api/client";
 
 function StatCard({ icon, label, value, subtext, color }) {
   return (
@@ -16,7 +17,10 @@ function StatCard({ icon, label, value, subtext, color }) {
 }
 
 function OverviewStats() {
-  const stats = getDashboardStats();
+  const [stats, setStats] = useState({ total_works: 0, total_sanctioned: 0, completed: 0, active_anomalies: 0, status_breakdown: {} });
+  useEffect(() => {
+    apiRequest("/works/dashboard/stats").then(setStats).catch(() => {});
+  }, []);
   const statusColors = {
     Completed: "bg-green-400",
     "In Progress": "bg-blue-400",
@@ -30,8 +34,8 @@ function OverviewStats() {
         <StatCard
           icon="💰"
           label="Total Sanctioned"
-          value={`₹${(stats.totalSanctioned / 10000000).toFixed(2)} Cr`}
-          subtext={`${stats.totalWorks} works`}
+          value={`₹${(stats.total_sanctioned / 10000000).toFixed(2)} Cr`}
+          subtext={`${stats.total_works} works`}
         />
         <StatCard
           icon="📈"
@@ -43,12 +47,12 @@ function OverviewStats() {
         <StatCard
           icon="✅"
           label="Works Completed"
-          value={`${stats.completed}/${stats.totalWorks}`}
+          value={`${stats.completed}/${stats.total_works}`}
         />
         <StatCard
           icon="⚠️"
           label="Active Anomalies"
-          value={stats.activeAnomalies}
+          value={stats.active_anomalies}
           subtext="flagged works"
           color="text-red-600"
         />
@@ -60,19 +64,19 @@ function OverviewStats() {
           <p className="font-semibold text-navy text-sm">
             Work Status Summary
           </p>
-          <p className="text-xs text-gray-400">{stats.totalWorks} total works</p>
+          <p className="text-xs text-gray-400">{stats.total_works} total works</p>
         </div>
         <div className="w-full h-3 rounded-full overflow-hidden flex mb-3">
-          {Object.entries(stats.statusBreakdown).map(([status, count]) => (
+          {Object.entries(stats.status_breakdown).map(([status, count]) => (
             <div
               key={status}
               className={statusColors[status]}
-              style={{ width: `${(count / stats.totalWorks) * 100}%` }}
+              style={{ width: `${stats.total_works ? (count / stats.total_works) * 100 : 0}%` }}
             ></div>
           ))}
         </div>
         <div className="flex gap-4 flex-wrap text-xs text-gray-500">
-          {Object.entries(stats.statusBreakdown).map(([status, count]) => (
+          {Object.entries(stats.status_breakdown).map(([status, count]) => (
             <span key={status} className="flex items-center gap-1">
               <span
                 className={`w-2 h-2 rounded-full inline-block ${statusColors[status]}`}

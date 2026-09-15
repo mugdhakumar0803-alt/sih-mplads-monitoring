@@ -13,6 +13,7 @@ passlib[bcrypt]
 python-multipart
 
 scikit-learn
+shap
 numpy
 pandas
 

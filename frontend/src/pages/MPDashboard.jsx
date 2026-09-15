@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import DashboardLayout from "../components/Common/DashboardLayout";
 import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
@@ -9,7 +8,6 @@ import ComplianceTracker from "../components/Compliance/ComplianceTracker";
 import EscalationTracker from "../components/Common/EscalationTracker";
 
 function MPDashboard() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Overview");
 
   const navItems = [

@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/Common/ProtectedRoute";
@@ -38,7 +39,7 @@ function App() {
           <Route
             path="/district"
             element={
-              <ProtectedRoute allowedRole="district">
+              <ProtectedRoute allowedRole="district_official">
                 <DistrictDashboard />
               </ProtectedRoute>
             }
@@ -46,7 +47,7 @@ function App() {
           <Route
             path="/state"
             element={
-              <ProtectedRoute allowedRole="state">
+              <ProtectedRoute allowedRole="state_official">
                 <StateDashboard />
               </ProtectedRoute>
             }

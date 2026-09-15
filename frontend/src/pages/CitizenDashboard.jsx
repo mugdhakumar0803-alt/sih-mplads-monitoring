@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import DashboardLayout from "../components/Common/DashboardLayout";
 import CitizenTracker from "../components/Dashboard/CitizenTracker";
+import MPLeaderboard from "../components/Dashboard/MPLeaderboard";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 
 function CitizenDashboard() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Track Works");
 
   const navItems = [
     { label: "Track Works" },
+    { label: "Citizen Performance" },
     { label: "File Grievance" },
   ];
 
@@ -23,6 +23,9 @@ function CitizenDashboard() {
       }))}
     >
       {activeTab === "Track Works" && <CitizenTracker />}
+
+      {activeTab === "Citizen Performance" && <MPLeaderboard />}
+
       {activeTab === "File Grievance" && <GrievancePanel />}
     </DashboardLayout>
   );

@@ -1,184 +1,55 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getWorkById, getPhotosForWork, getGrievancesForWork, addPhotoToWork, statusColors } from "../utils/mockData";
-import { getSLAStatus } from "../utils/slaHelper";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getGrievances, getPhotos, getWork } from "../api/client";
 import PhotoUpload from "../components/PhotoVerification/PhotoUpload";
-
-const photoStatusStyles = {
-  verified: "bg-green-100 text-green-700",
-  location_mismatch: "bg-red-100 text-red-700",
-  duplicate_image: "bg-orange-100 text-orange-700",
-  no_gps_data: "bg-gray-100 text-gray-600",
-};
+import GrievancePanel from "../components/Grievance/GrievancePanel";
 
 function WorkDetail() {
   const { workId } = useParams();
   const navigate = useNavigate();
-  const work = getWorkById(workId);
-  const [photos, setPhotos] = useState(getPhotosForWork(workId));
-  const grievances = getGrievancesForWork(workId);
-  const [showUpload, setShowUpload] = useState(false);
+  const [work, setWork] = useState(null);
+  const [photos, setPhotos] = useState([]);
+  const [grievances, setGrievances] = useState([]);
+  const [error, setError] = useState("");
 
-  if (!work) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <p className="text-gray-500">Work not found.</p>
-        <button onClick={() => navigate(-1)} className="text-navy text-sm mt-2">
-          ← Go back
-        </button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    Promise.all([getWork(workId), getPhotos(workId), getGrievances(workId)])
+      .then(([workResult, photoResult, grievanceResult]) => {
+        setWork(workResult);
+        setPhotos(photoResult.photos);
+        setGrievances(grievanceResult.grievances);
+      })
+      .catch((requestError) => setError(requestError.message));
+  }, [workId]);
 
-  const handleNewPhoto = (photo) => {
-    addPhotoToWork(workId, photo);
-    setPhotos((prev) => [...prev, photo]);
-  };
+  if (error) return <div className="min-h-screen bg-gray-50 p-8 text-red-600">{error}</div>;
+  if (!work) return <div className="min-h-screen bg-gray-50 p-8 text-gray-500">Loading work...</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <button
-        onClick={() => navigate(-1)}
-        className="text-sm text-gray-400 mb-4"
-      >
-        ← Back
-      </button>
-
+      <button onClick={() => navigate(-1)} className="text-sm text-gray-400 mb-4">← Back</button>
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-        <div className="flex justify-between items-start mb-3">
-          <div>
-            <h1 className="text-xl font-bold text-navy">{work.title}</h1>
-            <p className="text-sm text-gray-400">
-              {work.id} · {work.district} · {work.agency}
-            </p>
-          </div>
-          <span
-            className={`px-3 py-1 rounded-full text-sm font-semibold ${statusColors[work.status]}`}
-          >
-            {work.status}
-          </span>
-        </div>
-
+        <h1 className="text-xl font-bold text-navy">{work.title}</h1>
+        <p className="text-sm text-gray-400">{work.work_id} · {work.state}</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          <div>
-            <p className="text-xs text-gray-400">Sanctioned</p>
-            <p className="font-semibold text-navy">
-              ₹{(work.sanctioned / 100000).toFixed(1)}L
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400">Spent</p>
-            <p className="font-semibold text-navy">
-              ₹{(work.spent / 100000).toFixed(1)}L
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400">Progress</p>
-            <p className="font-semibold text-navy">{work.progress}%</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400">Geo-Tag</p>
-            <p className="font-semibold text-navy">
-              {work.geoTag ? "✅ Verified" : "❌ Missing"}
-            </p>
-          </div>
+          <div><p className="text-xs text-gray-400">Category</p><p className="font-semibold text-navy">{work.category}</p></div>
+          <div><p className="text-xs text-gray-400">Allocation</p><p className="font-semibold text-navy">₹{work.allocation_amount?.toLocaleString()}</p></div>
+          <div><p className="text-xs text-gray-400">Status</p><p className="font-semibold text-navy">{work.status}</p></div>
+          <div><p className="text-xs text-gray-400">Risk</p><p className="font-semibold text-navy">{work.risk_level || "Not assessed"}</p></div>
         </div>
-
-        {work.flags.length > 0 && (
-          <div className="mt-4 flex gap-2 flex-wrap">
-            {work.flags.map((flag) => (
-              <span
-                key={flag}
-                className="bg-red-50 text-red-600 text-xs px-2 py-1 rounded"
-              >
-                ⚠ {flag}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
-
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Photos */}
         <div>
           <div className="bg-white border border-gray-200 rounded-lg p-5 mb-4">
-            <div className="flex justify-between items-center mb-4">
-              <p className="font-semibold text-navy text-sm">
-                Geo-Tagged Photos ({photos.length})
-              </p>
-              <button
-                onClick={() => setShowUpload(!showUpload)}
-                className="text-xs bg-navy text-white px-3 py-1.5 rounded"
-              >
-                {showUpload ? "Cancel" : "+ Upload Photo"}
-              </button>
-            </div>
-
-            {photos.length === 0 ? (
-              <p className="text-sm text-gray-400">No photos uploaded yet.</p>
-            ) : (
-              <div className="space-y-3">
-                {photos.map((p) => (
-                  <div
-                    key={p.id}
-                    className="border border-gray-200 rounded p-3 flex justify-between items-center"
-                  >
-                    <div>
-                      <p className="text-sm font-medium text-navy capitalize">
-                        {p.stage} stage
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {p.id} · {p.uploadedAt}
-                        {p.distanceM !== null && ` · ${p.distanceM}m from registered location`}
-                      </p>
-                    </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded font-medium ${photoStatusStyles[p.status]}`}
-                    >
-                      {p.status.replace("_", " ")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <p className="font-semibold text-navy text-sm mb-4">Verified Photos ({photos.length})</p>
+            {photos.length === 0 ? <p className="text-sm text-gray-400">No photos uploaded yet.</p> : photos.map((photo) => <div key={photo.photo_id} className="border border-gray-200 rounded p-3 mb-2"><p className="text-sm text-navy">{photo.status}</p><p className="text-xs text-gray-400">Score: {photo.verification_score}</p></div>)}
           </div>
-
-          {showUpload && <PhotoUpload onUpload={handleNewPhoto} />}
+          <PhotoUpload workId={workId} onUpload={(photo) => setPhotos((previous) => [photo, ...previous])} />
         </div>
-
-        {/* Grievances */}
         <div className="bg-white border border-gray-200 rounded-lg p-5">
-          <p className="font-semibold text-navy text-sm mb-4">
-            Grievances on this Work ({grievances.length})
-          </p>
-          {grievances.length === 0 ? (
-            <p className="text-sm text-gray-400">No grievances filed.</p>
-          ) : (
-            <div className="space-y-3">
-              {grievances.map((g) => {
-                const sla = getSLAStatus(g.filedAt, g.slaDeadlineDays);
-                return (
-                  <div key={g.id} className="border border-gray-200 rounded p-3">
-                    <div className="flex justify-between items-start mb-1">
-                      <p className="text-xs text-gray-400">
-                        {g.id} · {g.filedBy}
-                      </p>
-                      <span
-                        className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                          sla.isOverdue
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {sla.label}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{g.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <p className="font-semibold text-navy text-sm mb-4">Grievances ({grievances.length})</p>
+          {grievances.map((grievance) => <div key={grievance.grievance_id} className="border border-gray-200 rounded p-3 mb-2"><p className="text-xs text-gray-400">{grievance.grievance_id} · {grievance.status}</p><p className="text-sm text-gray-600">{grievance.description}</p></div>)}
+          <GrievancePanel presetWorkId={workId} presetWorkTitle={work.title} />
         </div>
       </div>
     </div>
