@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import Optional
 
 from ..database import get_db
-from ..auth.dependencies import get_current_user
-from ..models.user import User
+from ..auth.dependencies import get_current_user, write_audit
+from ..models.user import User, UserRole
 from ..models.grievance import Grievance, GrievanceStatus, GrievanceSeverity
 from ..services.grievance_service import GrievanceService
 
@@ -13,9 +13,15 @@ router = APIRouter(
     tags=["Grievances"]
 )
 
+OFFICIAL_ROLES = {
+    UserRole.ADMIN, UserRole.MINISTRY, UserRole.STATE_OFFICIAL,
+    UserRole.DISTRICT_OFFICIAL, UserRole.MP,
+}
+
 
 @router.get("/")
 async def list_grievances(
+    request: Request,
     work_id: Optional[str] = None,
     status: Optional[str] = None,
     skip: int = 0,
@@ -34,7 +40,9 @@ async def list_grievances(
     grievances = GrievanceService.get_all_grievances(
         db, work_id=work_id, status=grievance_status, skip=skip, limit=limit
     )
-    
+
+    write_audit(db, current_user, "GRIEVANCES_LIST_VIEWED", request, resource_type="grievance")
+
     return {
         "total": len(grievances),
         "grievances": [
@@ -56,6 +64,7 @@ async def list_grievances(
 @router.get("/{grievance_id}")
 async def get_grievance(
     grievance_id: str,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -63,7 +72,12 @@ async def get_grievance(
     grievance = GrievanceService.get_grievance_by_id(db, grievance_id)
     if not grievance:
         raise HTTPException(status_code=404, detail="Grievance not found")
-    
+
+    write_audit(
+        db, current_user, "GRIEVANCE_VIEWED", request,
+        resource_type="grievance", resource_id=grievance_id,
+    )
+
     return {
         "grievance_id": grievance.grievance_id,
         "work_id": grievance.work_id,
@@ -83,11 +97,18 @@ async def get_grievance(
 @router.post("/file")
 async def file_grievance(
     grievance_data: dict,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """File a new grievance."""
+    """File a new grievance. Open to any authenticated user, including citizens."""
     grievance = GrievanceService.create_grievance(db, grievance_data)
+
+    write_audit(
+        db, current_user, "GRIEVANCE_FILED", request,
+        resource_type="grievance", resource_id=grievance.grievance_id,
+    )
+
     return {
         "grievance_id": grievance.grievance_id,
         "status": "registered",
@@ -99,11 +120,19 @@ async def file_grievance(
 async def update_grievance_status(
     grievance_id: str,
     new_status: str,
+    request: Request,
     resolution_notes: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Update grievance status."""
+    """Update grievance status. Restricted to officials."""
+    if current_user.role not in OFFICIAL_ROLES:
+        write_audit(
+            db, current_user, "GRIEVANCE_STATUS_UPDATE_DENIED", request,
+            resource_type="grievance", resource_id=grievance_id, status_value="FAILURE",
+        )
+        raise HTTPException(status_code=403, detail="Only officials may update grievance status")
+
     try:
         status_enum = GrievanceStatus(new_status)
     except ValueError:
@@ -115,7 +144,13 @@ async def update_grievance_status(
     
     if not grievance:
         raise HTTPException(status_code=404, detail="Grievance not found")
-    
+
+    write_audit(
+        db, current_user, "GRIEVANCE_STATUS_UPDATED", request,
+        resource_type="grievance", resource_id=grievance_id,
+        details={"new_status": new_status},
+    )
+
     return {
         "grievance_id": grievance.grievance_id,
         "status": grievance.status,
@@ -126,14 +161,27 @@ async def update_grievance_status(
 @router.post("/{grievance_id}/escalate")
 async def escalate_grievance(
     grievance_id: str,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Escalate a grievance."""
+    """Escalate a grievance. Restricted to officials."""
+    if current_user.role not in OFFICIAL_ROLES:
+        write_audit(
+            db, current_user, "GRIEVANCE_ESCALATE_DENIED", request,
+            resource_type="grievance", resource_id=grievance_id, status_value="FAILURE",
+        )
+        raise HTTPException(status_code=403, detail="Only officials may escalate grievances")
+
     grievance = GrievanceService.escalate_grievance(db, grievance_id)
     if not grievance:
         raise HTTPException(status_code=404, detail="Grievance not found")
-    
+
+    write_audit(
+        db, current_user, "GRIEVANCE_ESCALATED", request,
+        resource_type="grievance", resource_id=grievance_id,
+    )
+
     return {
         "grievance_id": grievance.grievance_id,
         "is_escalated": True,
