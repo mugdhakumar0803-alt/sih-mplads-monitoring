@@ -30,6 +30,11 @@ class WorkService:
         state: Optional[str] = None,
         status: Optional[WorkStatus] = None,
         current_user: Optional[User] = None,
+        district: Optional[str] = None,
+        constituency: Optional[str] = None,
+        category=None,
+        search: Optional[str] = None,
+        risk_level: Optional[str] = None,
         skip: int = 0,
         limit: int = 100,
     ) -> List[Work]:
@@ -37,8 +42,25 @@ class WorkService:
         query = db.query(Work)
         if state:
             query = query.filter(Work.state == state)
+        if district:
+            query = query.filter(Work.district == district)
+        if constituency:
+            query = query.filter(Work.constituency == constituency)
         if status:
             query = query.filter(Work.status == status)
+        if category:
+            query = query.filter(Work.category == category)
+        if risk_level:
+            query = query.filter(Work.risk_level == risk_level)
+        if search:
+            pattern = f"%{search}%"
+            query = query.filter(
+                Work.work_id.ilike(pattern)
+                | Work.work_title.ilike(pattern)
+                | Work.mp_name.ilike(pattern)
+                | Work.state.ilike(pattern)
+                | Work.constituency.ilike(pattern)
+            )
         if current_user and current_user.role == UserRole.MP:
             if current_user.constituency:
                 query = query.filter(Work.constituency == current_user.constituency)
@@ -49,6 +71,47 @@ class WorkService:
         elif current_user and current_user.role == UserRole.DISTRICT_OFFICIAL and current_user.district_id:
             query = query.filter(Work.district == current_user.district_id)
         return query.offset(skip).limit(limit).all()
+
+    @staticmethod
+    def count_works(db: Session, **filters) -> int:
+        return WorkService._build_query(db, **filters).count()
+
+    @staticmethod
+    def _build_query(db: Session, **filters):
+        current_user = filters.pop("current_user", None)
+        query = db.query(Work)
+        for field in ("state", "district", "constituency", "risk_level"):
+            value = filters.get(field)
+            if value:
+                query = query.filter(getattr(Work, field) == value)
+        if filters.get("status"):
+            query = query.filter(Work.status == filters["status"])
+        if filters.get("category"):
+            query = query.filter(Work.category == filters["category"])
+        if filters.get("search"):
+            pattern = f"%{filters['search']}%"
+            query = query.filter(
+                Work.work_id.ilike(pattern)
+                | Work.work_title.ilike(pattern)
+                | Work.mp_name.ilike(pattern)
+                | Work.state.ilike(pattern)
+                | Work.constituency.ilike(pattern)
+            )
+        if current_user:
+            if current_user.role == UserRole.MP:
+                query = query.filter(Work.constituency == current_user.constituency) if current_user.constituency else query.filter(Work.mp_name == current_user.username)
+            elif current_user.role == UserRole.STATE_OFFICIAL and current_user.state:
+                query = query.filter(Work.state == current_user.state)
+            elif current_user.role == UserRole.DISTRICT_OFFICIAL and current_user.district_id:
+                query = query.filter(Work.district == current_user.district_id)
+            elif current_user.role == UserRole.CITIZEN:
+                if current_user.state:
+                    query = query.filter(Work.state == current_user.state)
+                if current_user.district_id:
+                    query = query.filter(Work.district == current_user.district_id)
+                if current_user.constituency:
+                    query = query.filter(Work.constituency == current_user.constituency)
+        return query
 
     @staticmethod
     def get_work_by_id(db: Session, work_id: str) -> Optional[Work]:

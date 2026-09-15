@@ -6,7 +6,7 @@ from ..database import get_db
 from ..auth.dependencies import get_current_user, write_audit
 from ..auth.scope import require_work_scope
 from ..models.user import User
-from ..models.work import Work
+from ..models.work import Work, WorkStatus, WorkCategory
 from ..services.work_service import WorkService
 
 router = APIRouter(prefix="/works", tags=["Works"])
@@ -42,17 +42,28 @@ async def list_works(
     state: Optional[str] = None,
     skip: int = 0,
     limit: int = 100,
+    district: Optional[str] = None,
+    constituency: Optional[str] = None,
+    category: Optional[str] = None,
+    risk_level: Optional[str] = None,
+    search: Optional[str] = None,
+    status: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    works = WorkService.get_all_works(
-        db, state=state, skip=skip, limit=limit, current_user=current_user
-    )
+    try:
+        status_filter = WorkStatus(status) if status else None
+        category_filter = WorkCategory(category) if category else None
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+    filters = dict(state=state, district=district, constituency=constituency, category=category_filter, risk_level=risk_level, search=search, status=status_filter, current_user=current_user)
+    works = WorkService.get_all_works(db, skip=skip, limit=limit, **filters)
+    total = WorkService.count_works(db, **filters)
     write_audit(
         db, current_user, "WORKS_LIST_VIEWED", request,
         resource_type="work", status_value="SUCCESS",
     )
-    return {"total": len(works), "works": [serialize_work(w) for w in works]}
+    return {"total": total, "skip": skip, "limit": limit, "works": [serialize_work(w) for w in works]}
 
 
 @router.get("/{work_id}")

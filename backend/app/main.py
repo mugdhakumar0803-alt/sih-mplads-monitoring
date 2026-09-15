@@ -25,6 +25,7 @@ from app.routers.photos import router as photos_router
 from app.routers.dashboard import router as dashboard_router
 from app.routers.work_assignment import router as work_assignment_router
 from app.routers.leaderboard import router as leaderboard_router
+from app.routers.alerts import router as alerts_router
 
 app = FastAPI(
     title="SIH MPLADS Monitoring & Accountability Platform",
@@ -66,6 +67,7 @@ app.include_router(dashboard_router)
 app.include_router(photos_router)
 app.include_router(work_assignment_router)
 app.include_router(leaderboard_router)
+app.include_router(alerts_router)
 
 
 @app.on_event("startup")

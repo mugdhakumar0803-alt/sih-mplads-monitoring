@@ -7,6 +7,7 @@ import GrievancePanel from "../components/Grievance/GrievancePanel";
 import ComplianceTracker from "../components/Compliance/ComplianceTracker";
 import EscalationTracker from "../components/Common/EscalationTracker";
 import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
+import AlertsPanel from "../components/Common/AlertsPanel";
 import { useAuth } from "../context/AuthContext";
 
 function MPDashboard() {
@@ -31,7 +32,7 @@ function MPDashboard() {
         active: activeTab === n.label,
       }))}
     >
-      {activeTab === "Overview" && <OverviewStats />}
+      {activeTab === "Overview" && <><OverviewStats /><div className="mt-6"><AlertsPanel /></div></>}
       {activeTab === "Works Registry" && <WorksRegistry />}
       {activeTab === "Fund Release" && <FundReleaseGate />}
       {activeTab === "Grievances & SLA" && <GrievancePanel />}

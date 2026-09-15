@@ -5,6 +5,7 @@ from sqlalchemy import func
 
 from ..models.rating import Rating
 from ..models.work import Work, WorkStatus
+from ..models.user import UserRole
 
 
 class RatingService:
@@ -48,6 +49,7 @@ class RatingService:
         db: Session,
         citizen_id,
         data,
+        current_user_role,
     ):
         """
         Create a rating for a work.
@@ -65,6 +67,10 @@ class RatingService:
 
         if not work:
             return None, "Work not found"
+        if current_user_role != UserRole.CITIZEN:
+            return None, "Only citizens may submit ratings"
+        if work.status != WorkStatus.COMPLETED:
+            return None, "Ratings are available only for completed works"
 
         # Check whether this citizen has already
         # rated this work.
@@ -101,6 +107,24 @@ class RatingService:
         db.refresh(rating)
 
         return rating, None
+
+    @staticmethod
+    def get_work_ratings(db: Session, work_id: str):
+        work = db.query(Work).filter(Work.work_id == work_id).first()
+        if not work:
+            return None
+        ratings = db.query(Rating).filter(Rating.work_id == work.id).order_by(Rating.created_at.desc()).all()
+        return {
+            "work_id": work_id,
+            "average": round(sum(r.overall_score for r in ratings) / len(ratings), 2) if ratings else None,
+            "count": len(ratings),
+            "ratings": [{"rating_id": str(r.id), "overall_score": r.overall_score, "comment": r.comment, "created_at": r.created_at} for r in ratings],
+        }
+
+    @staticmethod
+    def get_mp_ratings(db: Session, mp_name: str):
+        ratings = db.query(Rating).join(Work, Rating.work_id == Work.id).filter(Work.mp_name == mp_name).all()
+        return {"mp_name": mp_name, "average": round(sum(r.overall_score for r in ratings) / len(ratings), 2) if ratings else None, "count": len(ratings)}
 
     @staticmethod
     def get_mp_rankings(

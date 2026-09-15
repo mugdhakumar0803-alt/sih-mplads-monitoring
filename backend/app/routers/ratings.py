@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..auth.dependencies import get_current_user
 from ..models.user import User
+from ..models.work import Work
+from typing import Optional
 from ..schemas.rating import RatingCreate
 from ..services.rating_service import RatingService
 
@@ -26,6 +28,7 @@ async def create_rating(
         db,
         current_user.id,
         data,
+        current_user.role,
     )
 
     if error:
@@ -38,6 +41,19 @@ async def create_rating(
         "message": "Rating submitted successfully",
         "overall_score": rating.overall_score,
     }
+
+
+@router.get("/work/{work_id}")
+async def work_ratings(work_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    result = RatingService.get_work_ratings(db, work_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Work not found")
+    return result
+
+
+@router.get("/mp/{mp_name}")
+async def mp_ratings(mp_name: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return RatingService.get_mp_ratings(db, mp_name)
 
 
 @router.get("/leaderboard")

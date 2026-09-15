@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends
+from collections import Counter
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case
 from app.database import get_db
 from app.models import Work, Grievance, Rating
 from app.models.work import WorkStatus
@@ -17,9 +17,9 @@ def fund_utilization(db: Session = Depends(get_db)):
         {
             "work": w.work_title,
             "allocated": w.allocation_amount,
-            "released": 0,
-            "utilized": 0,
-            "remaining": w.allocation_amount,
+            "released": None,
+            "utilized": w.expenditure_amount,
+            "remaining": None if w.expenditure_amount is None else w.allocation_amount - w.expenditure_amount,
         }
         for w in works
     ]
@@ -32,9 +32,9 @@ def progress_vs_utilization(db: Session = Depends(get_db)):
     return [
         {
             "work": w.work_title,
-            "month": w.updated_at.strftime("%b") if w.updated_at else "N/A",
-            "physical_progress_pct": 100 if w.status == WorkStatus.COMPLETED else 0,
-            "financial_utilization_pct": 100 if w.status == WorkStatus.COMPLETED else 0,
+            "month": w.recommended_date.strftime("%Y-%m") if w.recommended_date else None,
+            "physical_progress_pct": 100 if w.status == WorkStatus.COMPLETED else None,
+            "financial_utilization_pct": (w.expenditure_amount / w.allocation_amount * 100) if w.expenditure_amount is not None and w.allocation_amount else None,
         }
         for w in works
     ]
@@ -43,50 +43,36 @@ def progress_vs_utilization(db: Session = Depends(get_db)):
 # 3. Risk Distribution (donut)
 @router.get("/risk-distribution")
 def risk_distribution(db: Session = Depends(get_db)):
-    rows = (
-        db.query(Work.risk_level, func.count(Work.id))
-        .group_by(Work.risk_level)
-        .all()
-    )
-    return [{"level": level, "count": count} for level, count in rows]
+    counts = Counter(w.risk_level for w in db.query(Work).all() if w.risk_level)
+    return [{"level": level, "count": count} for level, count in sorted(counts.items())]
 
 
 # 4. Constituency / District Ranking (horizontal bar)
 @router.get("/constituency-ranking")
 def constituency_ranking(metric: str = "completion", db: Session = Depends(get_db)):
     # metric: completion | utilization | satisfaction | compliance
-    rows = (
-        db.query(Work.constituency, func.avg(
-            case((Work.status == WorkStatus.COMPLETED, 100), else_=0)
-        ).label("score"))
-        .group_by(Work.constituency)
-        .order_by(func.avg(Work.physical_progress_pct).desc())
-        .limit(10)
-        .all()
-    )
-    return [{"constituency": c, "score": round(score, 1)} for c, score in rows]
+    groups = {}
+    for work in db.query(Work).all():
+        groups.setdefault(work.constituency, []).append(work)
+    rows = []
+    for constituency, works in groups.items():
+        completed = sum(w.status == WorkStatus.COMPLETED for w in works)
+        rows.append({"constituency": constituency, "score": round(completed / len(works) * 100, 1) if works else None, "metric": metric})
+    return sorted(rows, key=lambda row: row["score"] if row["score"] is not None else -1, reverse=True)[:10]
 
 
 # 5. Citizen Verification status
 @router.get("/citizen-verification")
 def citizen_verification(db: Session = Depends(get_db)):
-    rows = (
-        db.query(Grievance.status, func.count(Grievance.id))
-        .group_by(Grievance.status)
-        .all()
-    )
-    return [{"status": s, "count": c} for s, c in rows]
+    counts = Counter(getattr(g.status, "value", g.status) for g in db.query(Grievance).all())
+    return [{"status": status, "count": count} for status, count in sorted(counts.items())]
 
 
 # 5b. Rating distribution
 @router.get("/rating-distribution")
 def rating_distribution(db: Session = Depends(get_db)):
-    rows = (
-        db.query(Rating.overall_score, func.count(Rating.id))
-        .group_by(Rating.overall_score)
-        .all()
-    )
-    return [{"stars": score, "count": count} for score, count in rows]
+    counts = Counter(round(r.overall_score) for r in db.query(Rating).all())
+    return [{"stars": stars, "count": count} for stars, count in sorted(counts.items())]
 
 
 # 6. Grievance Resolution Trend (line, monthly)
@@ -106,23 +92,20 @@ def grievance_trend(db: Session = Depends(get_db)):
 # 7. Compliance Score (bar)
 @router.get("/compliance-score")
 def compliance_score(db: Session = Depends(get_db)):
-    # Adjust to however you currently compute each sub-score
-    return [
-        {"category": "SC/ST Allocation", "score": 82},
-        {"category": "Priority Areas", "score": 75},
-        {"category": "Fund Release Conditions", "score": 91},
-        {"category": "Work Completion", "score": 68},
-        {"category": "Documentation", "score": 88},
-    ]
+    works = db.query(Work).all()
+    permissible = sum("religious" not in w.work_title.lower() for w in works)
+    return [{"category": "Permissible work category", "score": round(permissible / len(works) * 100, 1) if works else None}, {"category": "SC/ST allocation", "score": None, "status": "Data unavailable"}, {"category": "National priority area", "score": None, "status": "Requires aggregate allocation input"}]
 
 
 # 8. AI Risk Drivers for a single work (horizontal bar)
 @router.get("/risk-drivers/{work_id}")
-def risk_drivers(work_id: int, db: Session = Depends(get_db)):
-    work = db.query(Work).get(work_id)
-    # Pull directly from your anomaly model's explanation output
+def risk_drivers(work_id: str, db: Session = Depends(get_db)):
+    work = db.query(Work).filter(Work.work_id == work_id).first()
+    if not work:
+        raise HTTPException(status_code=404, detail="Work not found")
     return {
         "work_id": work_id,
         "risk_score": work.risk_score,
-        "drivers": work.anomaly_explanations,  # e.g. [{"factor": "...", "impact": "High"}, ...]
+        "drivers": work.anomaly_drivers or [],
+        "status": "Data unavailable" if work.risk_score is None else "calculated",
     }

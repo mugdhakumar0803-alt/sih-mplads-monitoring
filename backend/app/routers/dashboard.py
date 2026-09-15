@@ -39,6 +39,13 @@ def dashboard_summary(
         query = query.filter(Work.state == current_user.state)
     elif current_user.role == UserRole.DISTRICT_OFFICIAL and current_user.district_id:
         query = query.filter(Work.district == current_user.district_id)
+    elif current_user.role == UserRole.CITIZEN:
+        if current_user.state:
+            query = query.filter(Work.state == current_user.state)
+        if current_user.district_id:
+            query = query.filter(Work.district == current_user.district_id)
+        if current_user.constituency:
+            query = query.filter(Work.constituency == current_user.constituency)
     works = query.all()
     total = len(works)
     sanctioned = sum(work.status == WorkStatus.SANCTIONED for work in works)
@@ -102,6 +109,12 @@ def state_distribution(db: Session = Depends(get_db)):
     rows = db.query(Work.state).all()
     counts = Counter(state for (state,) in rows if state)
     return [{"state": state, "count": count} for state, count in counts.most_common()]
+
+
+@router.get("/states")
+def available_states(db: Session = Depends(get_db)):
+    rows = db.query(Work.state).distinct().order_by(Work.state).all()
+    return {"states": [state for (state,) in rows if state]}
 
 
 @router.get("/category-distribution")

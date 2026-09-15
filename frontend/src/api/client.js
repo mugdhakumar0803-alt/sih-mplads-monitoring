@@ -68,6 +68,15 @@ export function getWorkRisk(workId) {
   return apiRequest(`/ai/risk/${encodeURIComponent(workId)}`);
 }
 
+export function getAvailableStates() {
+  return apiRequest("/dashboard/states");
+}
+
+export function getPerformanceLeaderboard(state = "") {
+  const query = state ? `?state=${encodeURIComponent(state)}` : "";
+  return apiRequest(`/leaderboard${query}`);
+}
+
 export function getGrievances(workId = "") {
   const query = workId ? `?work_id=${encodeURIComponent(workId)}` : "";
   return apiRequest(`/grievances/${query}`);
