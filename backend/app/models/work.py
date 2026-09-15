@@ -4,7 +4,6 @@ from sqlalchemy.dialects.postgresql import UUID, JSON
 from datetime import datetime
 import uuid
 import enum
-from sqlalchemy import Float
 
 from ..database import Base
 
@@ -15,6 +14,7 @@ class WorkStatus(str, enum.Enum):
     ONGOING = "Ongoing"
     COMPLETED = "Completed"
     UNSANCTIONED = "Unsanctioned"
+    REJECTED = "Rejected"
 
 
 class WorkCategory(str, enum.Enum):
@@ -34,7 +34,7 @@ class WorkCategory(str, enum.Enum):
 class Work(Base):
     """MPLADS work record model."""
     __tablename__ = "works"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     work_id = Column(String(50), unique=True, index=True, nullable=False)
     mp_name = Column(String(255), nullable=False)
@@ -43,21 +43,21 @@ class Work(Base):
     state = Column(String(100), index=True, nullable=False)
     constituency = Column(String(255), nullable=False)
     location = Column(String(255))
-    status = Column(Enum(WorkStatus), default=WorkStatus.SANCTIONED, index=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    status = Column(Enum(WorkStatus), default=WorkStatus.UNSANCTIONED, index=True)
     allocation_amount = Column(Float, nullable=False)
     ida_approval = Column(String(50))
     recommended_date = Column(DateTime, nullable=False)
     completion_date = Column(DateTime)
-    
-    # Risk and anomaly detection
+    recommended_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    sanctioned_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    sanctioned_at = Column(DateTime, nullable=True)
+    rejection_reason = Column(Text, nullable=True)
     risk_score = Column(Float, default=0.0)
-    risk_level = Column(String(50))  # low, medium, high
-    anomaly_drivers = Column(JSON)  # List of detected anomaly drivers
-    
-    # Verification metrics
+    risk_level = Column(String(50))
+    anomaly_drivers = Column(JSON)
     days_since_last_photo = Column(Float)
     citizen_grievance_count = Column(Integer, default=0)
-    
-    # Metadata
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

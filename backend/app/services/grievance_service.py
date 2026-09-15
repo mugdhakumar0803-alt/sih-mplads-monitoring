@@ -5,6 +5,7 @@ from datetime import datetime
 from ..models.grievance import Grievance, GrievanceStatus, GrievanceSeverity
 from ..services.sla_engine import compute_sla_status
 import uuid
+from ..services.grievance_access import determine_filing_defaults, get_visible_grievances_query
 
 
 class GrievanceService:
@@ -20,7 +21,7 @@ class GrievanceService:
         limit: int = 100,
     ) -> List[Grievance]:
         """Get grievances with optional filtering."""
-        query = db.query(Grievance)
+        query = get_visible_grievances_query(db, current_user)
 
         if work_id:
             query = query.filter(Grievance.work_id == work_id)
@@ -41,7 +42,10 @@ class GrievanceService:
         """Create a new grievance record."""
         grievance_data = dict(grievance_data)
         grievance_data.setdefault("grievance_id", f"GRV-{uuid.uuid4().hex[:10].upper()}")
-        grievance_data.setdefault("current_escalation_level", "district")
+        filer_role = grievance_data.pop("filer_role", "citizen")
+        starting_level, visibility = determine_filing_defaults(filer_role)
+        grievance_data.setdefault("current_escalation_level", starting_level)
+        grievance_data.setdefault("visibility", visibility)
         new_grievance = Grievance(**grievance_data)
         db.add(new_grievance)
         db.commit()
