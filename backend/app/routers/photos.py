@@ -11,6 +11,7 @@ from ..auth.scope import require_work_scope
 from ..models.photo import PhotoVerification
 from ..models.user import User, UserRole
 from ..models.work import Work
+from ..services.photo_verification import verify_photo
 
 router = APIRouter(prefix="/photos", tags=["Photo Verification"])
 

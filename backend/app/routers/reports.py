@@ -24,7 +24,7 @@ class VerifyPayload(BaseModel):
 
 
 def signing_keys():
-    return DigitalSignature.load_or_create_keys(
+    return DigitalSignature.load_keys(
         settings.report_private_key_path,
         settings.report_public_key_path,
     )
@@ -37,11 +37,41 @@ async def sign_report(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if current_user.role not in {
-        UserRole.ADMIN, UserRole.MINISTRY, UserRole.STATE_OFFICIAL,
-        UserRole.DISTRICT_OFFICIAL, UserRole.MP,
-    }:
-        raise HTTPException(status_code=403, detail="Only officials may sign reports")
+    allowed_roles = {
+    UserRole.ADMIN,
+    UserRole.MINISTRY,
+    UserRole.STATE_OFFICIAL,
+    UserRole.DISTRICT_OFFICIAL,
+    UserRole.MP,
+    }
+
+    if (
+        current_user.role not in allowed_roles
+        or not current_user.is_approved()
+    ):
+        write_audit(
+            db,
+            current_user,
+            "REPORT_SIGNING_DENIED",
+            request,
+            resource_type="report",
+            resource_id=payload.report_id,
+            status_value="FAILURE",
+            details={
+                "role":
+                    current_user.role.value,
+                "approval_status":
+                    current_user.approval_status.value,
+            },
+        )
+
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Only approved authorized officials "
+                "may sign reports"
+            ),
+        )
 
     existing = db.query(ReportSignature).filter(
         ReportSignature.report_id == payload.report_id

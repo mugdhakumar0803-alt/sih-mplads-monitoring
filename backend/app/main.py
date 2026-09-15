@@ -76,5 +76,4 @@ def health_check():
         "status": "healthy"
     }
 from app.routers.dashboard import router as dashboard_router
-...
 app.include_router(dashboard_router)
