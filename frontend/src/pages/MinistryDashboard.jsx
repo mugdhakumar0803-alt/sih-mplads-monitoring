@@ -15,6 +15,7 @@ function MinistryDashboard() {
     { label: "National Overview" },
     { label: "Systemic Patterns" },
     { label: "Escalated Cases" },
+    { label: "Ask AI" },
   ];
 
   return (
@@ -39,7 +40,7 @@ function MinistryDashboard() {
       )}
       {activeTab === "Systemic Patterns" && <SystemicPatterns />}
       {activeTab === "Escalated Cases" && <EscalationTracker />}
-      <div className="mt-6"><ChatbotWidget /></div>
+      {activeTab === "Ask AI" && <ChatbotWidget />}
     </DashboardLayout>
   );
 }

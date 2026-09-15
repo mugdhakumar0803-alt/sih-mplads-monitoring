@@ -16,6 +16,7 @@ function DistrictDashboard() {
     { label: "Works Registry" },
     { label: "Grievances & SLA" },
     { label: "Escalation" },
+    { label: "Ask AI" },
   ];
 
   return (
@@ -38,7 +39,7 @@ function DistrictDashboard() {
       {activeTab === "Works Registry" && <WorksRegistry />}
       {activeTab === "Grievances & SLA" && <GrievancePanel />}
       {activeTab === "Escalation" && <EscalationTracker />}
-      <div className="mt-6"><ChatbotWidget /></div>
+      {activeTab === "Ask AI" && <ChatbotWidget />}
     </DashboardLayout>
   );
 }

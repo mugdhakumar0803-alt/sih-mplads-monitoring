@@ -1,4 +1,4 @@
-"""Approve a pending account for a local demo or administrator workflow."""
+"""Approve a pending account for local development or an admin workflow."""
 import argparse
 
 from .database import SessionLocal
@@ -12,6 +12,7 @@ def approve(username: str) -> bool:
         if not user:
             return False
         user.approval_status = ApprovalStatus.APPROVED
+        user.is_active = True
         db.commit()
         return True
     finally:

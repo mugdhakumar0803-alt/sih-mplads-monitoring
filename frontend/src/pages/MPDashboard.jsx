@@ -21,6 +21,7 @@ function MPDashboard() {
     { label: "Grievances & SLA" },
     { label: "Escalation" },
     { label: "Compliance" },
+    { label: "Ask AI" },
   ];
 
   return (
@@ -38,7 +39,7 @@ function MPDashboard() {
       {activeTab === "Grievances & SLA" && <GrievancePanel />}
       {activeTab === "Escalation" && <EscalationTracker />}
       {activeTab === "Compliance" && <ComplianceTracker />}
-      <div className="mt-6"><ChatbotWidget /></div>
+      {activeTab === "Ask AI" && <ChatbotWidget />}
     </DashboardLayout>
   );
 }
