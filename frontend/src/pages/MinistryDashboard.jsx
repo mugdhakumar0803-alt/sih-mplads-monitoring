@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DashboardLayout from "../components/Common/DashboardLayout";
+import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
 import SystemicPatterns from "../components/Common/SystemicPatterns";
 import EscalationTracker from "../components/Common/EscalationTracker";
@@ -29,7 +30,10 @@ function MinistryDashboard() {
           <p className="text-gray-600 mb-4">
             Welcome, {user?.name}. National overview of all works.
           </p>
-          <WorksRegistry />
+          <OverviewStats />
+          <div className="mt-6">
+            <WorksRegistry />
+          </div>
         </div>
       )}
       {activeTab === "Systemic Patterns" && <SystemicPatterns />}

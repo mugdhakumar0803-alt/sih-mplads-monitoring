@@ -1,26 +1,28 @@
-# Application configuration
-from pydantic_settings import BaseSettings
-from typing import Optional
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Application configuration from environment variables."""
-    
-    # Database
-    database_url: str = "sqlite:///./mplads.db"
-    
+    """Application configuration loaded from environment variables."""
+
+    database_url: str = "postgresql+psycopg2://user:password@localhost:5432/mplads"
+
     # JWT
-    secret_key: str = "your-secret-key-change-in-production"
+    secret_key: str = "CHANGE_ME_IN_PRODUCTION"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
-    
-    # API
+
+    # Report signing
+    report_private_key_path: str = "app/signing/keys/report_private.pem"
+    report_public_key_path: str = "app/signing/keys/report_public.pem"
+
     api_title: str = "MPLADS Monitoring System"
     api_version: str = "1.0.0"
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="ignore",
+    )
 
 
 settings = Settings()
