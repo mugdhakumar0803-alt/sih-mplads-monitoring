@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getCurrentUser, loginRequest } from "../api/client";
+import { getCurrentUser, loginRequest, registerRequest } from "../api/client";
 
 /* eslint-disable react-refresh/only-export-components */
 
@@ -27,13 +27,26 @@ export function AuthProvider({ children }) {
     return profile;
   };
 
+  // NEW — this didn't exist before, which is why Register.jsx crashed
+  // silently on submit. Registers with the real backend, then logs the
+  // user in immediately afterward so they land straight in the app.
+  const register = async (role, name, email, password) => {
+    await registerRequest({
+      username: email,   // backend expects `username` — using email keeps it unique and simple
+      email,
+      password,
+      role,
+    });
+    return login(email, password);
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("mplads_token");
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

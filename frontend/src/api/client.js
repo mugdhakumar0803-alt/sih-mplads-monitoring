@@ -32,6 +32,13 @@ export function loginRequest(username, password) {
   });
 }
 
+export function registerRequest(userData) {
+  return apiRequest("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(userData),
+  });
+}
+
 export function getCurrentUser() {
   return apiRequest("/auth/me");
 }

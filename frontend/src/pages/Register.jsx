@@ -16,15 +16,25 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) return;
-    register(selectedRole, name, email);
-    const role = roles.find((r) => r.id === selectedRole);
-    navigate(role.path);
+    setError("");
+    setSubmitting(true);
+    try {
+      await register(selectedRole, name, email, password);
+      const role = roles.find((r) => r.id === selectedRole);
+      navigate(role.path);
+    } catch (err) {
+      setError(err.message || "Registration failed — please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -87,11 +97,13 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 rounded px-3 py-2 text-sm"
             />
+            {error && <p className="text-red-600 text-sm">{error}</p>}
             <button
               type="submit"
-              className="bg-navy text-white rounded py-2 text-sm font-semibold mt-2 hover:opacity-90"
+              disabled={submitting}
+              className="bg-navy text-white rounded py-2 text-sm font-semibold mt-2 hover:opacity-90 disabled:opacity-50"
             >
-              Create Account
+              {submitting ? "Creating account..." : "Create Account"}
             </button>
           </form>
         </div>
