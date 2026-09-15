@@ -17,7 +17,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models.work import Work
+from ..models.work import Work, WorkStatus
 from ..models.grievance import Grievance
 from ..models.fund_release import FundReleaseRecord, ReleaseStatus
 
@@ -27,9 +27,14 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 @router.get("/summary")
 def dashboard_summary(db: Session = Depends(get_db)):
     total = db.query(Work).count()
-    sanctioned = db.query(Work).filter(Work.status == "sanctioned").count()
-    in_progress = db.query(Work).filter(Work.status == "in_progress").count()
-    completed = db.query(Work).filter(Work.status == "completed").count()
+    # These MUST match the real WorkStatus enum values in models/work.py
+    # ("Sanctioned", "Ongoing", "Completed" — capitalized, and there is
+    # no "in_progress" status). Using the wrong strings silently returns
+    # 0 for every count instead of erroring, which is why these numbers
+    # looked broken even with data in the table.
+    sanctioned = db.query(Work).filter(Work.status == WorkStatus.SANCTIONED).count()
+    in_progress = db.query(Work).filter(Work.status == WorkStatus.ONGOING).count()
+    completed = db.query(Work).filter(Work.status == WorkStatus.COMPLETED).count()
 
     high_risk = db.query(Work).filter(Work.risk_level == "high").count()
     medium_risk = db.query(Work).filter(Work.risk_level == "medium").count()

@@ -5,6 +5,7 @@ import OverviewStats from "../components/Dashboard/OverviewStats";
 import WorksRegistry from "../components/Dashboard/WorksRegistry";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 import EscalationTracker from "../components/Common/EscalationTracker";
+import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
 
 function DistrictDashboard() {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ function DistrictDashboard() {
     { label: "Works Registry" },
     { label: "Grievances & SLA" },
     { label: "Escalation" },
+    { label: "Ask AI" },
   ];
 
   return (
@@ -37,6 +39,7 @@ function DistrictDashboard() {
       {activeTab === "Works Registry" && <WorksRegistry />}
       {activeTab === "Grievances & SLA" && <GrievancePanel />}
       {activeTab === "Escalation" && <EscalationTracker />}
+      {activeTab === "Ask AI" && <ChatbotWidget />}
     </DashboardLayout>
   );
 }

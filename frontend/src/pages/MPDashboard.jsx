@@ -6,6 +6,7 @@ import FundReleaseGate from "../components/FundRelease/FundReleaseGate";
 import GrievancePanel from "../components/Grievance/GrievancePanel";
 import ComplianceTracker from "../components/Compliance/ComplianceTracker";
 import EscalationTracker from "../components/Common/EscalationTracker";
+import ChatbotWidget from "../components/Chatbot/ChatbotWidget";
 
 function MPDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
@@ -17,6 +18,7 @@ function MPDashboard() {
     { label: "Grievances & SLA" },
     { label: "Escalation" },
     { label: "Compliance" },
+    { label: "Ask AI" },
   ];
 
   return (
@@ -34,6 +36,7 @@ function MPDashboard() {
       {activeTab === "Grievances & SLA" && <GrievancePanel />}
       {activeTab === "Escalation" && <EscalationTracker />}
       {activeTab === "Compliance" && <ComplianceTracker />}
+      {activeTab === "Ask AI" && <ChatbotWidget />}
     </DashboardLayout>
   );
 }

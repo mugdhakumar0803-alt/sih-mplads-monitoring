@@ -42,3 +42,12 @@ class UserRegister(BaseModel):
     constituency_id: Optional[str] = None
     district_id: Optional[str] = None
     state_id: Optional[str] = None
+
+    # Human-readable versions — these are what dashboards, the leaderboard,
+    # and the chatbot actually filter/display by, so they must be captured
+    # at registration time, not just the *_id codes above.
+    state: Optional[str] = None
+    constituency: Optional[str] = None
+
+    # Only meaningful when role == "mp": "lok_sabha" or "rajya_sabha"
+    house: Optional[str] = None
