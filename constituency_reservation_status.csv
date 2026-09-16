@@ -1,0 +1,544 @@
+state,constituency_no_in_state,constituency_name,reservation_status,electors_2024
+Andaman and Nicobar Islands,1,Andaman and Nicobar Islands,None,315745
+Andhra Pradesh,1,Araku,ST,1557153
+Andhra Pradesh,2,Srikakulam,None,1646686
+Andhra Pradesh,3,Vizianagaram,None,1590994
+Andhra Pradesh,4,Visakhapatnam,None,1931398
+Andhra Pradesh,5,Anakapalli,None,1601365
+Andhra Pradesh,6,Kakinada,None,1634921
+Andhra Pradesh,7,Amalapuram,SC,1532229
+Andhra Pradesh,8,Rajahmundry,None,1623852
+Andhra Pradesh,9,Narasapuram,None,1473811
+Andhra Pradesh,10,Eluru,None,1638116
+Andhra Pradesh,11,Machilipatnam,None,1540045
+Andhra Pradesh,12,Vijayawada,None,1704469
+Andhra Pradesh,13,Guntur,None,1793324
+Andhra Pradesh,14,Narasaraopet,None,1736162
+Andhra Pradesh,15,Bapatla,SC,1511177
+Andhra Pradesh,16,Ongole,None,1614525
+Andhra Pradesh,17,Nandyal,None,1724191
+Andhra Pradesh,18,Kurnool,None,1724191
+Andhra Pradesh,19,Anantapur,None,1769264
+Andhra Pradesh,20,Hindupur,None,1658529
+Andhra Pradesh,21,Kadapa,None,1641349
+Andhra Pradesh,22,Nellore,None,1712840
+Andhra Pradesh,23,Tirupati,SC,1730318
+Andhra Pradesh,24,Rajampet,None,1667385
+Andhra Pradesh,25,Chittoor,SC,1643593
+Arunachal Pradesh,1,Arunachal West,None,520085
+Arunachal Pradesh,2,Arunachal East,None,378357
+Assam,1,Kokrajhar,ST,1494404
+Assam,2,Dhubri,None,2663987
+Assam,3,Barpeta,None,1979051
+Assam,4,Darrang-Udalguri,None,2214516
+Assam,5,Guwahati,None,2039765
+Assam,6,Diphu,ST,902050
+Assam,7,Karimganj,None,1414520
+Assam,8,Silchar,SC,1374559
+Assam,9,Nagaon,None,1821023
+Assam,10,Kaziranga,None,2053805
+Assam,11,Sonitpur,None,1638992
+Assam,12,Lakhimpur,None,1580500
+Assam,13,Dibrugarh,None,1661998
+Assam,14,Jorhat,None,1732944
+Bihar,1,Valmiki Nagar,None,1829052
+Bihar,2,Paschim Champaran,None,1759234
+Bihar,3,Purvi Champaran,None,1793440
+Bihar,4,Sheohar,None,1834437
+Bihar,5,Sitamarhi,None,1950028
+Bihar,6,Madhubani,None,1936759
+Bihar,7,Jhanjharpur,None,2005278
+Bihar,8,Supaul,None,1928887
+Bihar,9,Araria,None,2019757
+Bihar,10,Kishanganj,None,1830197
+Bihar,11,Katihar,None,1834512
+Bihar,12,Purnia,None,1895036
+Bihar,13,Madhepura,None,2073608
+Bihar,14,Darbhanga,None,1782853
+Bihar,15,Muzaffarpur,None,1869072
+Bihar,16,Vaishali,None,1871877
+Bihar,17,Gopalganj,SC,2027054
+Bihar,18,Siwan,None,1901956
+Bihar,19,Maharajganj,None,1942449
+Bihar,20,Saran,None,1800790
+Bihar,21,Hajipur,SC,1972915
+Bihar,22,Ujiarpur,None,1748377
+Bihar,23,Samastipur,SC,1820016
+Bihar,24,Begusarai,None,2200435
+Bihar,25,Khagaria,None,1843767
+Bihar,26,Bhagalpur,None,1988207
+Bihar,27,Banka,None,1859967
+Bihar,28,Munger,None,2051829
+Bihar,29,Nalanda,None,2293994
+Bihar,30,Patna Sahib,None,2295527
+Bihar,31,Pataliputra,None,2080613
+Bihar,32,Arrah,None,2183625
+Bihar,33,Buxar,None,1934352
+Bihar,34,Sasaram,SC,1914914
+Bihar,35,Karakat,None,1888005
+Bihar,36,Jahanabad,None,1678716
+Bihar,37,Aurangabad,None,1875809
+Bihar,38,Gaya,SC,1821330
+Bihar,39,Nawada,None,2010286
+Bihar,40,Jamui,SC,1910619
+Chandigarh,1,Chandigarh,None,660552
+Chhattisgarh,1,Sarguja,ST,1820880
+Chhattisgarh,2,Raigarh,ST,1840847
+Chhattisgarh,3,Janjgir-Champa,SC,2058260
+Chhattisgarh,4,Korba,None,1620051
+Chhattisgarh,5,Bilaspur,None,2103937
+Chhattisgarh,6,Rajnandgaon,None,1869229
+Chhattisgarh,7,Durg,None,2092551
+Chhattisgarh,8,Raipur,None,2376030
+Chhattisgarh,9,Mahasamund,None,1763698
+Chhattisgarh,10,Bastar,ST,1473810
+Chhattisgarh,11,Kanker,ST,1659374
+Dadra and Nagar Haveli and Daman and Diu,1,Daman and Diu,None,134201
+Dadra and Nagar Haveli and Daman and Diu,2,Dadra and Nagar Haveli,ST,283035
+Delhi,1,Chandni Chowk,None,1646467
+Delhi,2,North East Delhi,None,2464397
+Delhi,3,East Delhi,None,2121610
+Delhi,4,New Delhi,None,1526694
+Delhi,5,North West Delhi,SC,2569274
+Delhi,6,West Delhi,None,2592498
+Delhi,7,South Delhi,None,2293698
+Goa,1,North Goa,None,580710
+Goa,2,South Goa,None,598934
+Gujarat,1,Kachchh,SC,1943633
+Gujarat,2,Banaskantha,None,1963312
+Gujarat,3,Patan,None,2021772
+Gujarat,4,Mahesana,None,1772048
+Gujarat,5,Sabarkantha,None,1980797
+Gujarat,6,Gandhinagar,None,2183402
+Gujarat,7,Ahmedabad East,None,2040263
+Gujarat,8,Ahmedabad West,SC,1727645
+Gujarat,9,Surendranagar,None,2035001
+Gujarat,10,Rajkot,None,2112726
+Gujarat,11,Porbandar,None,1769594
+Gujarat,12,Jamnagar,None,1818959
+Gujarat,13,Junagadh,None,1796532
+Gujarat,14,Amreli,None,1733367
+Gujarat,15,Bhavnagar,None,1918394
+Gujarat,16,Anand,None,1780709
+Gujarat,17,Kheda,None,2008281
+Gujarat,18,Panchmahal,None,1898234
+Gujarat,19,Dahod,ST,1876247
+Gujarat,20,Vadodara,None,1950123
+Gujarat,21,Chhota Udaipur,ST,1822437
+Gujarat,22,Bharuch,None,1723670
+Gujarat,23,Bardoli,ST,2048788
+Gujarat,24,Surat,None,1786287
+Gujarat,25,Navsari,None,2223804
+Gujarat,26,Valsad,ST,1860207
+Haryana,1,Ambala,SC,2003510
+Haryana,2,Kurukshetra,None,1799822
+Haryana,3,Sirsa,SC,1941319
+Haryana,4,Hisar,None,1799539
+Haryana,5,Karnal,None,2109702
+Haryana,6,Sonipat,None,1777008
+Haryana,7,Rohtak,None,1913628
+Haryana,8,Bhiwani-Mahendragarh,None,1821764
+Haryana,9,Gurgaon,None,2584982
+Haryana,10,Faridabad,None,2436637
+Himachal Pradesh,1,Kangra,None,1524032
+Himachal Pradesh,2,Mandi,None,1377173
+Himachal Pradesh,3,Hamirpur,None,1456099
+Himachal Pradesh,4,Shimla,SC,1354665
+Jammu and Kashmir,1,Baramulla,None,1744525
+Jammu and Kashmir,2,Srinagar,None,1748803
+Jammu and Kashmir,3,Anantnag-Rajouri,None,1849517
+Jammu and Kashmir,4,Udhampur,None,1640846
+Jammu and Kashmir,5,Jammu,None,1818657
+Jharkhand,1,Rajmahal,ST,1705708
+Jharkhand,2,Dumka,ST,1592192
+Jharkhand,3,Godda,None,2030444
+Jharkhand,4,Chatra,None,1692698
+Jharkhand,5,Koderma,None,2207845
+Jharkhand,6,Giridih,None,1866763
+Jharkhand,7,Dhanbad,None,2290354
+Jharkhand,8,Ranchi,None,2202528
+Jharkhand,9,Jamshedpur,None,1871388
+Jharkhand,10,Singhbhum,ST,1449471
+Jharkhand,11,Khunti,ST,1329423
+Jharkhand,12,Lohardaga,ST,1448225
+Jharkhand,13,Palamu,SC,2248082
+Jharkhand,14,Hazaribagh,None,1942771
+Karnataka,1,Chikkodi,None,1770523
+Karnataka,2,Belgaum,None,1931746
+Karnataka,3,Bagalkot,None,1810090
+Karnataka,4,Bijapur,SC,1947976
+Karnataka,5,Gulbarga,SC,2098778
+Karnataka,6,Raichur,ST,2010441
+Karnataka,7,Bidar,None,1894364
+Karnataka,8,Koppal,None,1867016
+Karnataka,9,Bellary,ST,1884472
+Karnataka,10,Haveri,None,1794394
+Karnataka,11,Dharwad,None,1834015
+Karnataka,12,Uttara Kannada,None,1645721
+Karnataka,13,Davanagere,None,1709809
+Karnataka,14,Shimoga,None,1753615
+Karnataka,15,Udupi Chikmagalur,None,1585721
+Karnataka,16,Hassan,None,1738818
+Karnataka,17,Dakshina Kannada,None,1818127
+Karnataka,18,Chitradurga,SC,1857385
+Karnataka,19,Tumkur,None,1661834
+Karnataka,20,Mandya,None,1780149
+Karnataka,21,Mysore,None,2094310
+Karnataka,22,Chamarajanagar,SC,1778667
+Karnataka,23,Bangalore Rural,None,2802956
+Karnataka,24,Bangalore North,None,3215291
+Karnataka,25,Bangalore Central,None,2434254
+Karnataka,26,Bangalore South,None,2341895
+Karnataka,27,Chikballapur,None,1981767
+Karnataka,28,Kolar,SC,1728198
+Kerala,1,Kasaragod,None,1455530
+Kerala,2,Kannur,None,1363080
+Kerala,3,Vatakara,None,1424792
+Kerala,4,Wayanad,None,1464472
+Kerala,5,Kozhikode,None,1432508
+Kerala,6,Malappuram,None,1480714
+Kerala,7,Ponnani,None,1471260
+Kerala,8,Palakkad,None,1400914
+Kerala,9,Alathur,SC,1340183
+Kerala,10,Thrissur,None,1483783
+Kerala,11,Chalakudy,None,1311257
+Kerala,12,Ernakulam,None,1324757
+Kerala,13,Idukki,None,1251172
+Kerala,14,Kottayam,None,1256138
+Kerala,15,Alappuzha,None,1406689
+Kerala,16,Mavelikara,SC,1339159
+Kerala,17,Pathanamthitta,None,1433956
+Kerala,18,Kollam,None,1330873
+Kerala,19,Attingal,None,1401114
+Kerala,20,Thiruvananthapuram,None,1434657
+Ladakh,1,Ladakh,None,190576
+Lakshadweep,1,Lakshadweep,ST,57953
+Madhya Pradesh,1,Morena,None,2015928
+Madhya Pradesh,2,Bhind,SC,1913389
+Madhya Pradesh,3,Gwalior,None,2160206
+Madhya Pradesh,4,Guna,None,1890695
+Madhya Pradesh,5,Sagar,None,1746640
+Madhya Pradesh,6,Tikamgarh,SC,1827976
+Madhya Pradesh,7,Damoh,None,1926000
+Madhya Pradesh,8,Khajuraho,None,1998536
+Madhya Pradesh,9,Satna,None,1708823
+Madhya Pradesh,10,Rewa,None,1859439
+Madhya Pradesh,11,Sidhi,None,2030095
+Madhya Pradesh,12,Shahdol,ST,1778158
+Madhya Pradesh,13,Jabalpur,None,1898180
+Madhya Pradesh,14,Mandla,ST,2103244
+Madhya Pradesh,15,Balaghat,None,1875760
+Madhya Pradesh,16,Chhindwara,None,1634721
+Madhya Pradesh,17,Hoshangabad,None,1858158
+Madhya Pradesh,18,Vidisha,None,1946631
+Madhya Pradesh,19,Bhopal,None,2339411
+Madhya Pradesh,20,Rajgarh,None,1876672
+Madhya Pradesh,21,Dewas,SC,1943559
+Madhya Pradesh,22,Ujjain,SC,1800347
+Madhya Pradesh,23,Mandsaur,None,1900808
+Madhya Pradesh,24,Ratlam,ST,2095109
+Madhya Pradesh,25,Dhar,ST,1955117
+Madhya Pradesh,26,Indore,None,2527978
+Madhya Pradesh,27,Khargone,ST,2046409
+Madhya Pradesh,28,Khandwa,None,2112874
+Madhya Pradesh,29,Betul,ST,1897989
+Maharashtra,1,Nandurbar,ST,1971324
+Maharashtra,2,Dhule,None,2025275
+Maharashtra,3,Jalgaon,None,2000402
+Maharashtra,4,Raver,None,1823827
+Maharashtra,5,Buldhana,None,1787095
+Maharashtra,6,Akola,None,1894657
+Maharashtra,7,Amravati,SC,1838767
+Maharashtra,8,Wardha,None,1684292
+Maharashtra,9,Ramtek,SC,2050952
+Maharashtra,10,Nagpur,None,2224282
+Maharashtra,11,Bhandara-Gondiya,None,1830399
+Maharashtra,12,Gadchiroli-Chimur,ST,1618690
+Maharashtra,13,Chandrapur,None,1839760
+Maharashtra,14,Yavatmal-Washim,None,1942461
+Maharashtra,15,Hingoli,None,1819082
+Maharashtra,16,Nanded,None,1853532
+Maharashtra,17,Parbhani,None,2124497
+Maharashtra,18,Jalna,None,1969953
+Maharashtra,19,Aurangabad,None,2061220
+Maharashtra,20,Dindori,ST,1857924
+Maharashtra,21,Nashik,None,2033175
+Maharashtra,22,Palghar,ST,2148850
+Maharashtra,23,Bhiwandi,None,2087604
+Maharashtra,24,Kalyan,None,2082800
+Maharashtra,25,Thane,None,2508072
+Maharashtra,26,Mumbai North,None,1812115
+Maharashtra,27,Mumbai North West,None,1735295
+Maharashtra,28,Mumbai North East,None,1637292
+Maharashtra,29,Mumbai North Central,None,1744297
+Maharashtra,30,Mumbai South Central,None,1474660
+Maharashtra,31,Mumbai South,None,1536443
+Maharashtra,32,Raigad,None,1669722
+Maharashtra,33,Maval,None,2585776
+Maharashtra,34,Pune,None,2062172
+Maharashtra,35,Baramati,None,2374884
+Maharashtra,36,Shirur,None,2541750
+Maharashtra,37,Ahmednagar,None,1988934
+Maharashtra,38,Shirdi,SC,1680067
+Maharashtra,39,Beed,None,2147063
+Maharashtra,40,Osmanabad,None,1996484
+Maharashtra,41,Latur,SC,1980409
+Maharashtra,42,Solapur,SC,2031921
+Maharashtra,43,Madha,None,1996298
+Maharashtra,44,Sangli,None,1874176
+Maharashtra,45,Satara,None,1899325
+Maharashtra,46,Ratnagiri-Sindhudurg,None,1452664
+Maharashtra,47,Kolhapur,None,1942725
+Maharashtra,48,Hatkanangle,None,1818396
+Manipur,1,Inner Manipur,None,1001115
+Manipur,2,Outer Manipur,ST,1050242
+Meghalaya,1,Shillong,ST,1402892
+Meghalaya,2,Tura,ST,827559
+Mizoram,1,Mizoram,ST,861327
+Nagaland,1,Nagaland,None,1325383
+Odisha,1,Bargarh,None,1633893
+Odisha,2,Sundargarh,ST,1579096
+Odisha,3,Sambalpur,None,1501538
+Odisha,4,Keonjhar,ST,1589941
+Odisha,5,Mayurbhanj,ST,1546274
+Odisha,6,Balasore,None,1610043
+Odisha,7,Bhadrak,SC,1773928
+Odisha,8,Jajpur,SC,1548594
+Odisha,9,Dhenkanal,None,1533702
+Odisha,10,Bolangir,None,1803544
+Odisha,11,Kalahandi,None,1702038
+Odisha,12,Nabarangpur,ST,1514610
+Odisha,13,Kandhamal,None,1340580
+Odisha,14,Cuttack,None,1574979
+Odisha,15,Kendrapara,None,1795725
+Odisha,16,Jagatsinghpur,SC,1703489
+Odisha,17,Puri,None,1589698
+Odisha,18,Bhubaneswar,None,1675019
+Odisha,19,Aska,None,1623404
+Odisha,20,Berhampur,None,1595228
+Odisha,21,Koraput,ST,1481642
+Puducherry,1,Puducherry,None,1024024
+Punjab,1,Gurdaspur,None,1627611
+Punjab,2,Amritsar,None,1617542
+Punjab,3,Khadoor Sahib,None,1680035
+Punjab,4,Jalandhar,SC,1655868
+Punjab,5,Hoshiarpur,SC,1618186
+Punjab,6,Anandpur Sahib,None,1740606
+Punjab,7,Ludhiana,None,1760756
+Punjab,8,Fatehgarh Sahib,SC,1557201
+Punjab,9,Faridkot,SC,1599861
+Punjab,10,Firozpur,None,1674979
+Punjab,11,Bathinda,None,1659163
+Punjab,12,Sangrur,None,1563808
+Punjab,13,Patiala,None,1811580
+Rajasthan,1,Ganganagar,SC,2103968
+Rajasthan,2,Bikaner,SC,2050748
+Rajasthan,3,Churu,None,2222213
+Rajasthan,4,Jhunjhunu,None,2097732
+Rajasthan,5,Sikar,None,2232334
+Rajasthan,6,Jaipur Rural,None,2194555
+Rajasthan,7,Jaipur,None,2288793
+Rajasthan,8,Alwar,None,2075093
+Rajasthan,9,Bharatpur,SC,2124971
+Rajasthan,10,Karauli-Dholpur,SC,1980182
+Rajasthan,11,Dausa,ST,1903520
+Rajasthan,12,Tonk-Sawai Madhopur,None,2150616
+Rajasthan,13,Ajmer,None,1999399
+Rajasthan,14,Nagaur,None,2155502
+Rajasthan,15,Pali,None,2348274
+Rajasthan,16,Jodhpur,None,2138241
+Rajasthan,17,Barmer,None,2208630
+Rajasthan,18,Jalore,None,2297692
+Rajasthan,19,Udaipur,ST,2231240
+Rajasthan,20,Banswara,ST,2200607
+Rajasthan,21,Chittorgarh,None,2170738
+Rajasthan,22,Rajsamand,None,2064478
+Rajasthan,23,Bhilwara,None,2148657
+Rajasthan,24,Kota,None,2088853
+Rajasthan,25,Jhalawar-Baran,None,2030974
+Sikkim,1,Sikkim,None,466643
+Tamil Nadu,1,Thiruvallur,SC,2086686
+Tamil Nadu,2,Chennai North,None,1496459
+Tamil Nadu,3,Chennai South,None,2023381
+Tamil Nadu,4,Chennai Central,None,1350334
+Tamil Nadu,5,Sriperumbudur,None,2382578
+Tamil Nadu,6,Kancheepuram,SC,1749192
+Tamil Nadu,7,Arakkonam,None,1568140
+Tamil Nadu,8,Vellore,None,1534347
+Tamil Nadu,9,Krishnagiri,None,1627851
+Tamil Nadu,10,Dharmapuri,None,1526799
+Tamil Nadu,11,Tiruvannamalai,None,1536993
+Tamil Nadu,12,Arani,None,1499659
+Tamil Nadu,13,Villupuram,SC,1503959
+Tamil Nadu,14,Kallakurichi,None,1569097
+Tamil Nadu,15,Salem,None,1659269
+Tamil Nadu,16,Namakkal,None,1452952
+Tamil Nadu,17,Erode,None,1538960
+Tamil Nadu,18,Tiruppur,None,1608720
+Tamil Nadu,19,Nilgiris,SC,1428889
+Tamil Nadu,20,Coimbatore,None,2106500
+Tamil Nadu,21,Pollachi,None,1597717
+Tamil Nadu,22,Dindigul,None,1608624
+Tamil Nadu,23,Karur,None,1430499
+Tamil Nadu,24,Tiruchirappalli,None,1554620
+Tamil Nadu,25,Perambalur,None,1447197
+Tamil Nadu,26,Cuddalore,None,1413170
+Tamil Nadu,27,Chidambaram,SC,1520970
+Tamil Nadu,28,Mayiladuthurai,None,1546075
+Tamil Nadu,29,Nagapattinam,SC,1345708
+Tamil Nadu,30,Thanjavur,None,1502056
+Tamil Nadu,31,Sivaganga,None,1635655
+Tamil Nadu,32,Madurai,None,1583250
+Tamil Nadu,33,Theni,None,1630328
+Tamil Nadu,34,Virudhunagar,None,1505927
+Tamil Nadu,35,Ramanathapuram,None,1619761
+Tamil Nadu,36,Thoothukkudi,None,1461182
+Tamil Nadu,37,Tenkasi,SC,1529130
+Tamil Nadu,38,Tirunelveli,None,1656265
+Tamil Nadu,39,Kanniyakumari,None,1566048
+Telangana,1,Adilabad,ST,1652394
+Telangana,2,Peddapalle,SC,1597892
+Telangana,3,Karimnagar,None,1798168
+Telangana,4,Nizamabad,None,1705591
+Telangana,5,Zahirabad,None,1642425
+Telangana,6,Medak,None,1828717
+Telangana,7,Malkajgiri,None,3780453
+Telangana,8,Secunderabad,None,2120550
+Telangana,9,Hyderabad,None,2217305
+Telangana,10,Chevella,None,2939057
+Telangana,11,Mahbubnagar,None,1683709
+Telangana,12,Nagarkurnool,SC,1739310
+Telangana,13,Nalgonda,None,1726204
+Telangana,14,Bhongir,None,1809241
+Telangana,15,Warangal,SC,1825492
+Telangana,16,Mahabubabad,ST,1533858
+Telangana,17,Khammam,None,1631952
+Tripura,1,Tripura West,None,1469453
+Tripura,2,Tripura East,ST,1401443
+Uttar Pradesh,1,Saharanpur,None,1857816
+Uttar Pradesh,2,Kairana,None,1727579
+Uttar Pradesh,3,Muzaffarnagar,None,1823717
+Uttar Pradesh,4,Bijnor,None,1743213
+Uttar Pradesh,5,Nagina,SC,1647310
+Uttar Pradesh,6,Moradabad,None,2062642
+Uttar Pradesh,7,Rampur,None,1733243
+Uttar Pradesh,8,Sambhal,None,1899292
+Uttar Pradesh,9,Amroha,None,1720677
+Uttar Pradesh,10,Meerut,None,2005669
+Uttar Pradesh,11,Baghpat,None,1665208
+Uttar Pradesh,12,Ghaziabad,None,2948720
+Uttar Pradesh,13,Gautam Buddha Nagar,None,2681482
+Uttar Pradesh,14,Bulandshahr,SC,1867981
+Uttar Pradesh,15,Aligarh,None,2002868
+Uttar Pradesh,16,Hathras,SC,1946138
+Uttar Pradesh,17,Mathura,None,1939130
+Uttar Pradesh,18,Agra,SC,2075821
+Uttar Pradesh,19,Fatehpur Sikri,None,1807314
+Uttar Pradesh,20,Firozabad,None,1896052
+Uttar Pradesh,21,Mainpuri,None,1798051
+Uttar Pradesh,22,Etah,None,1703935
+Uttar Pradesh,23,Badaun,None,2010304
+Uttar Pradesh,24,Aonla,None,1893622
+Uttar Pradesh,25,Bareilly,None,1926167
+Uttar Pradesh,26,Pilibhit,None,1833961
+Uttar Pradesh,27,Shahjahanpur,SC,2333143
+Uttar Pradesh,28,Kheri,None,1871224
+Uttar Pradesh,29,Dhaurahra,None,1719979
+Uttar Pradesh,30,Sitapur,None,1760367
+Uttar Pradesh,31,Hardoi,SC,1911779
+Uttar Pradesh,32,Misrikh,SC,1879798
+Uttar Pradesh,33,Unnao,None,2344843
+Uttar Pradesh,34,Mohanlalganj,SC,2189866
+Uttar Pradesh,35,Lucknow,None,2173953
+Uttar Pradesh,36,Rae Bareli,None,1788731
+Uttar Pradesh,37,Amethi,None,1798715
+Uttar Pradesh,38,Sultanpur,None,1855602
+Uttar Pradesh,39,Pratapgarh,None,1836748
+Uttar Pradesh,40,Farrukhabad,None,1751985
+Uttar Pradesh,41,Etawah,SC,1834489
+Uttar Pradesh,42,Kannauj,None,1993616
+Uttar Pradesh,43,Kanpur,None,1664794
+Uttar Pradesh,44,Akbarpur,None,1875912
+Uttar Pradesh,45,Jalaun,SC,2010583
+Uttar Pradesh,46,Jhansi,None,2162404
+Uttar Pradesh,47,Hamirpur,None,1841604
+Uttar Pradesh,48,Banda,None,1749034
+Uttar Pradesh,49,Fatehpur,None,1942597
+Uttar Pradesh,50,Kaushambi,SC,1912536
+Uttar Pradesh,51,Phulpur,None,2071536
+Uttar Pradesh,52,Allahabad,None,1828159
+Uttar Pradesh,53,Barabanki,SC,1919282
+Uttar Pradesh,54,Faizabad,None,1929399
+Uttar Pradesh,55,Ambedkar Nagar,None,1913756
+Uttar Pradesh,56,Bahraich,SC,1839281
+Uttar Pradesh,57,Kaiserganj,None,1906032
+Uttar Pradesh,58,Shrawasti,None,1980743
+Uttar Pradesh,59,Gonda,None,1843873
+Uttar Pradesh,60,Domariyaganj,None,1962205
+Uttar Pradesh,61,Basti,None,1904843
+Uttar Pradesh,62,Sant Kabir Nagar,None,2076050
+Uttar Pradesh,63,Maharajganj,None,2007065
+Uttar Pradesh,64,Gorakhpur,None,2101746
+Uttar Pradesh,65,Kushi Nagar,None,1876962
+Uttar Pradesh,66,Deoria,None,1877227
+Uttar Pradesh,67,Bansgaon,SC,1825711
+Uttar Pradesh,68,Lalganj,SC,1841110
+Uttar Pradesh,69,Azamgarh,None,1871946
+Uttar Pradesh,70,Ghosi,None,2090637
+Uttar Pradesh,71,Salempur,None,1784412
+Uttar Pradesh,72,Ballia,None,1936995
+Uttar Pradesh,73,Jaunpur,None,1979004
+Uttar Pradesh,74,Machhlishahr,SC,1943763
+Uttar Pradesh,75,Ghazipur,None,2088636
+Uttar Pradesh,76,Chandauli,None,1850547
+Uttar Pradesh,77,Varanasi,None,1999861
+Uttar Pradesh,78,Bhadohi,None,2039941
+Uttar Pradesh,79,Mirzapur,None,1909448
+Uttar Pradesh,80,Robertsganj,SC,1780728
+Uttarakhand,1,Tehri Garhwal,None,1590526
+Uttarakhand,2,Garhwal,None,1404233
+Uttarakhand,3,Almora,SC,1368432
+Uttarakhand,4,Nainital-Udhamsingh Nagar,None,2026438
+Uttarakhand,5,Haridwar,None,2041472
+West Bengal,1,Cooch Behar,SC,1970743
+West Bengal,2,Alipurduars,ST,1778463
+West Bengal,3,Jalpaiguri,SC,1889840
+West Bengal,4,Darjeeling,None,1776898
+West Bengal,5,Raiganj,None,1791574
+West Bengal,6,Balurghat,None,1563941
+West Bengal,7,Maldaha Uttar,None,1864285
+West Bengal,8,Maldaha Dakshin,None,1784407
+West Bengal,9,Jangipur,None,1807556
+West Bengal,10,Baharampur,None,1789424
+West Bengal,11,Murshidabad,None,1890589
+West Bengal,12,Krishnanagar,None,1762599
+West Bengal,13,Ranaghat,SC,1877599
+West Bengal,14,Bangaon,SC,1841292
+West Bengal,15,Barrackpore,None,1512101
+West Bengal,16,Dum Dum,None,1700882
+West Bengal,17,Barasat,None,1907604
+West Bengal,18,Basirhat,None,1805874
+West Bengal,19,Jaynagar,SC,1845363
+West Bengal,20,Mathurapur,SC,1818113
+West Bengal,21,Diamond Harbour,None,1881552
+West Bengal,22,Jadavpur,None,2034251
+West Bengal,23,Kolkata Dakshin,None,1850115
+West Bengal,24,Kolkata Uttar,None,1505686
+West Bengal,25,Howrah,None,1769973
+West Bengal,26,Uluberia,None,1742388
+West Bengal,27,Srerampur,None,1928256
+West Bengal,28,Hooghly,None,1860103
+West Bengal,29,Arambagh,SC,1885001
+West Bengal,30,Tamluk,None,1853363
+West Bengal,31,Kanthi,None,1797658
+West Bengal,32,Ghatal,None,1942313
+West Bengal,33,Jhargram,ST,1782435
+West Bengal,34,Medinipur,None,1813205
+West Bengal,35,Purulia,None,1825625
+West Bengal,36,Bankura,None,1785138
+West Bengal,37,Bishnupur,SC,1758481
+West Bengal,38,Bardhaman Purba,SC,1803240
+West Bengal,39,Bardhaman-Durgapur,None,1853336
+West Bengal,40,Asansol,None,1771875
+West Bengal,41,Bolpur,SC,1842192
+West Bengal,42,Birbhum,None,1859447

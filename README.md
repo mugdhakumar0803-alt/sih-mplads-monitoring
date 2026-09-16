@@ -1,105 +1,92 @@
 # SIH MPLADS Monitoring & Accountability Platform
 
-AI-powered MPLADS Monitoring and Accountability Platform developed for Smart India Hackathon.
+## Repository status
 
-## Problem
+This repository is a strong foundation for an MPLADS monitoring platform, but it is not yet a complete end-to-end, fully data-backed implementation.
 
-The platform aims to improve transparency, monitoring, accountability and anomaly detection in MPLADS-funded development works.
+The current evidence shows:
+- one real MPLADS project dataset is present in [backend/app/ml/training/MPLADS.csv](backend/app/ml/training/MPLADS.csv)
+- no authoritative GIS shapefiles, MP master export, or financial ledger were found in the local workspace
+- the application uses database-backed patterns, but missing datasets must remain explicitly unavailable rather than fabricated
 
-## Core Features
+## Exact setup commands
 
-- AI-powered anomaly detection
-- Duplicate work detection
-- Project delay analysis
-- Deterministic compliance checking
-- Citizen project tracking
-- Citizen grievance management
-- Official vs citizen discrepancy detection
-- Photo verification
-- Fund release monitoring
-- Digital signatures and audit trail
-- Authority performance scoring
-- Citizen RAG assistant
-
-## Technology Stack
-
-### Frontend
-
-- React
-- JavaScript
-- HTML
-- CSS
-
-### Backend
-
-- FastAPI
-- Python
-- PostgreSQL
-- PostGIS
-
-### AI / ML
-
-- Scikit-learn
-- Sentence Transformers
-- NLP
-- Machine Learning
-
-### Security
-
-- JWT
-- Role-Based Access Control
-- Password Hashing
-- Digital Signatures
-
-### DevOps
-
-- Docker
-- GitHub Actions
-
-## Project Structure
-
-```text
-backend/
-├── app/
-│   ├── models/
-│   ├── schemas/
-│   ├── auth/
-│   ├── signing/
-│   ├── routers/
-│   ├── services/
-│   └── ml/
-│
-├── tests/
-├── requirements.txt
-└── README.md
-
-## Data-driven MVP workflow
-
-Start PostgreSQL and Redis with `docker compose up -d postgres redis`, then run from `backend/`:
+### 1. Frontend
 
 ```bash
-../.venv/bin/python -m app.migrate_schema
-../.venv/bin/python -m app.data_pipeline app/ml/training/MPLADS.csv
-uvicorn app.main:app --reload --port 8000
+cd /Users/somyatiwari/Desktop/sih-mplads-monitoring/frontend
+npm install
+npm run build
+npm run dev -- --host 0.0.0.0 --port 5173
 ```
 
-The importer detects encoding and delimiter, validates required columns, cleans dates and amounts, removes exact duplicates, upserts by source record identity, and prints actual import statistics. It does not invent expenditure, completion dates, coordinates, photos, compliance values, or risk values when the source does not provide them.
-
-Run the frontend with `npm install && npm run dev` from `frontend/`. API documentation is available at `http://127.0.0.1:8000/docs`.
-
-Government CSV values are stored with `source_dataset` and `source_record_id`. Risk scores, duplicate candidates, SLA deadlines, compliance results, and authority scores are platform-generated. Photos and grievances are user-generated evidence. The current MPLADS CSV does not contain reliable project GPS, uploaded photographs, or complete expenditure data; those fields are displayed as unavailable until supplied.
-
-See `docs/IMPLEMENTATION_AUDIT.md`, `docs/data-pipeline.md`, `docs/ai-methodology.md`, and `docs/feature-traceability.md`.
-
-### Docker-free local demo
-
-When PostgreSQL is not available, run the backend against SQLite from the repository root:
+### 2. Backend (local venv)
 
 ```bash
-DATABASE_URL=sqlite:////Users/nandini/Desktop/sih-mplads-monitoring/local-dev.db \
-/Users/nandini/Desktop/sih-mplads-monitoring/.venv/bin/python -m uvicorn app.main:app \
-	--app-dir /Users/nandini/Desktop/sih-mplads-monitoring/backend \
-	--host 127.0.0.1 --port 8000 --loop asyncio
+cd /Users/somyatiwari/Desktop/sih-mplads-monitoring/backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Import into the same database with the matching absolute `DATABASE_URL`, then open `http://127.0.0.1:5173/` for the Vite frontend.
+### 3. Run the API
+
+```bash
+cd /Users/somyatiwari/Desktop/sih-mplads-monitoring/backend
+source .venv/bin/activate
+export DATABASE_URL=sqlite:////Users/somyatiwari/Desktop/sih-mplads-monitoring/local-dev.db
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+### 4. Import the real MPLADS CSV
+
+```bash
+cd /Users/somyatiwari/Desktop/sih-mplads-monitoring/backend
+source .venv/bin/activate
+python -m app.data_pipeline app/ml/training/MPLADS.csv
+```
+
+### 5. Docker stack
+
+```bash
+cd /Users/somyatiwari/Desktop/sih-mplads-monitoring
+docker compose up -d postgres redis
+```
+
+Then run the backend and frontend using the configured environment variables from `.env.example`.
+
+## Core principles
+
+- never invent GPS coordinates
+- never invent expenditure or sanctions
+- never invent MP identity or constituency geometry
+- never invent disaster events
+- never fabricate citizen ratings or evidence
+- if a dataset is missing, expose an explicit unavailable state
+
+## Main repo contents
+
+- backend: FastAPI, SQLAlchemy, ML modules, models, routers
+- frontend: React + Vite app
+- docs: audit and dataset documentation
+- data: raw and processed data directories
+
+## Audit documents
+
+The repository audit and gap analysis are stored in:
+- [docs/DEEP_REPOSITORY_AUDIT.md](docs/DEEP_REPOSITORY_AUDIT.md)
+- [docs/DATASET_INVENTORY.md](docs/DATASET_INVENTORY.md)
+- [docs/REQUIRED_DATASETS.md](docs/REQUIRED_DATASETS.md)
+- [docs/DATA_GAP_REPORT.md](docs/DATA_GAP_REPORT.md)
+- [docs/GIS_DATASET_AUDIT.md](docs/GIS_DATASET_AUDIT.md)
+- [docs/DATA_LINEAGE.md](docs/DATA_LINEAGE.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/API_MAPPING.md](docs/API_MAPPING.md)
+- [docs/ML_PIPELINE.md](docs/ML_PIPELINE.md)
+- [docs/DEMO_FLOW.md](docs/DEMO_FLOW.md)
+- [docs/FEATURE_GAP_REPORT.md](docs/FEATURE_GAP_REPORT.md)
+- [docs/FINAL_IMPLEMENTATION_STATUS.md](docs/FINAL_IMPLEMENTATION_STATUS.md)
+
+## Current project status
+
+The current implementation is partial and data-limited, not complete. It can support a real data-import foundation, but it cannot claim full end-to-end GIS, financial, MP, or disaster functionality without the missing datasets.

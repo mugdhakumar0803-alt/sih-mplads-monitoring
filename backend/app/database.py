@@ -40,4 +40,5 @@ def get_db():
 def init_db():
     """Create local tables; production deployments should use migrations."""
     from .models import alert, fund_release, grievance, photo, user, work, rating
+    from .models import mp, constituency, reference_data
     Base.metadata.create_all(bind=engine)

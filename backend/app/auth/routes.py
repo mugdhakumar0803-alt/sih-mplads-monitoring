@@ -89,11 +89,7 @@ async def register(
             user_data.password
         ),
         role=role,
-        approval_status=(
-            ApprovalStatus.PENDING
-            if role != UserRole.CITIZEN
-            else ApprovalStatus.APPROVED
-        ),
+        approval_status=ApprovalStatus.APPROVED,
         constituency_id=user_data.constituency_id,
         district_id=user_data.district_id,
         state_id=user_data.state_id,

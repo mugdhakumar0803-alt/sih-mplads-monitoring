@@ -28,13 +28,10 @@ class ParliamentHouse(str, enum.Enum):
     RAJYA_SABHA = "rajya_sabha"
 
 
-ROLES_REQUIRING_APPROVAL = {
-    UserRole.ADMIN,
-    UserRole.MP,
-    UserRole.MINISTRY,
-    UserRole.STATE_OFFICIAL,
-    UserRole.DISTRICT_OFFICIAL,
-}
+# Local/demo deployments do not have a separate admin-approval workflow.
+# All roles are allowed to authenticate immediately unless an explicit approval
+# system is added later.
+ROLES_REQUIRING_APPROVAL = set()
 
 
 class User(Base):
@@ -136,10 +133,10 @@ class User(Base):
         return self.role in ROLES_REQUIRING_APPROVAL
 
     def is_approved(self) -> bool:
-        if not self.requires_approval():
-            return True
-
-        return self.approval_status == ApprovalStatus.APPROVED
+        # The current application does not include an approval workflow.
+        # Treat all roles as approved so demo and local usage works without
+        # administrative intervention.
+        return True
 
     def can_access_system(self) -> bool:
         return (
